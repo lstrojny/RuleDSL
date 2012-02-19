@@ -80,11 +80,6 @@ class Parser
         return $this->processNaked($value);
     }
 
-    protected function processComment($value)
-    {
-        return false;
-    }
-
     protected function processNaked($value)
     {
         $regex = '/

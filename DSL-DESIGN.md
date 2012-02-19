@@ -44,7 +44,7 @@
  - Date handling
  - Percentage handling
  - Currency handling
- - Readable numbers 1 000 000 instead of 1 000 000
+ - Readable numbers 1 000 000 instead of 1000000
 
 ## Examples
 ### Shopping vouchers

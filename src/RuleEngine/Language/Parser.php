@@ -76,6 +76,7 @@ class Parser
     protected function processAll($value)
     {
         $regex = '/
+            (?<whitespace0>\s*)
             (?<return>RETURN)
             (?<whitespace1>\s+)
             (?<expression>.+?)

@@ -93,7 +93,7 @@ class Parser
             (?<evaluation>ALL|ANY)
             (?:
                 (?:\s+RULE[S]?)?
-                (?:\s+APPLY)?
+                (?:\s+APPL(?:Y|IES))?
             )?
             (?<whitespace4>\s+)
             (?<begin>BEGIN)

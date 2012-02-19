@@ -46,7 +46,7 @@ END');
 
     public function testParseRuleWithBoolClause()
     {
-        $result = $this->parser->parse('RETURN 1 WHEN ANY RULE APPLY
+        $result = $this->parser->parse('RETURN 1 WHEN ANY RULE APPLIES
 BEGIN
 CONFIRMED OF USER IS TRUE
 END');

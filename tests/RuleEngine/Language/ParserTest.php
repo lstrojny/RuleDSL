@@ -262,7 +262,7 @@ END');
         );
         $result = $this->parser->parse('RETURN TRUE WHEN ALL RULES APPLY
 BEGIN
-DEBT OF USER IS NOT GREATER OR EQUAL THAN 100
+DEBT OF USER IS NOT GREATER OR EQUAL THAN 1 000
 END');
         $this->assertEqualTokenStreams(
             array(
@@ -284,7 +284,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ComparisonToken('IS NOT GREATER OR EQUAL'),
                 new Token\WhitespaceToken(' '),
-                new Token\IntegerToken(100),
+                new Token\IntegerToken(1000),
                 new Token\WhitespaceToken("\n"),
                 new Token\EndToken('END'),
             ),

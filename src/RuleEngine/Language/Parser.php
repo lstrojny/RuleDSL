@@ -121,7 +121,8 @@ class Parser
 
     protected function processInteger($value)
     {
-        $this->tokens[] = new Token\IntegerToken((integer) $value);
+        $value = (integer) str_replace(' ', '', $value);
+        $this->tokens[] = new Token\IntegerToken($value);
 
         return false;
     }
@@ -186,7 +187,7 @@ class Parser
     {
         $this->push($remainingMatches);
 
-        $regex = '/
+        $regex = '/^
                 (?:
                     (?<comparison1>
                         IS
@@ -217,8 +218,8 @@ class Parser
                     )
                 )
                 (?<whitespace>\s+)
-                (?<expression>.*)
-            /x';
+                (?<expression>.+?)
+            $/x';
         $this->push($this->match($value, $regex));
 
         return true;
@@ -249,15 +250,15 @@ class Parser
     {
         $this->push($remainingMatches);
 
-        $regex = '/(?:
-                (?<bool>TRUE|FALSE)
-                |
-                \+?(?<integer>\-?\d+)
-                |
-                (?<property>.*)
-            )/x';
+        $regex = '/^(?:
+            (?<bool>TRUE|FALSE)
+            |
+            \+?(?<integer>\-?[\d\s]+)
+            |
+            (?<property>.+)
+        $)/x';
 
-        $this->push($this->match($value, $regex));
+        $this->push($m = $this->match($value, $regex));
 
         return true;
     }

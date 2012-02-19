@@ -40,7 +40,6 @@
  - `MEMBERSHIP OF USER IS NOT PREMIUM`
 
 ### Todos
- - Allow `WAS/ARE/WERE` as aliases for `IS`
  - Date handling
  - Percentage handling
  - Currency handling

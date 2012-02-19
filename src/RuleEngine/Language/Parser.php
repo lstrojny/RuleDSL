@@ -188,34 +188,16 @@ class Parser
         $this->push($remainingMatches);
 
         $regex = '/^
-                (?:
-                    (?<comparison1>
-                        IS
-                        (:?
-                            \s+
-                            NOT
-                        )?
-                        \s+
-                        (?:GREATER|LESS)
-                        (?:
-                          \s+
-                          OR
-                          \s+
-                          EQUAL
-                        )?
-                    )
+                (?<comparison>
+                    (ARE|IS|WAS|WERE)
+                    (:?\s+NOT)?
                     (?:
                         \s+
-                        THAN
+                        (?:GREATER|LESS)
+                        (?:\s+THAN)?
+                        (?:\s+OR\s+EQUAL)?
+                        (?:\s+THAN)?
                     )?
-                    |
-                    (?<comparison2>
-                        IS
-                        (:?
-                            \s+
-                            NOT
-                        )?
-                    )
                 )
                 (?<whitespace>\s+)
                 (?<expression>.+?)

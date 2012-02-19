@@ -102,7 +102,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS GREATER'),
+                new Token\ComparisonToken('IS GREATER THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(18),
                 new Token\WhitespaceToken("\n"),
@@ -132,7 +132,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS GREATER'),
+                new Token\ComparisonToken('IS GREATER THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(18),
                 new Token\WhitespaceToken("\n"),
@@ -162,7 +162,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS GREATER'),
+                new Token\ComparisonToken('IS GREATER THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(-100),
                 new Token\WhitespaceToken("\n"),
@@ -192,7 +192,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS LESS'),
+                new Token\ComparisonToken('IS LESS THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(-100),
                 new Token\WhitespaceToken("\n"),
@@ -252,7 +252,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS NOT LESS'),
+                new Token\ComparisonToken('IS NOT LESS THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(-100),
                 new Token\WhitespaceToken("\n"),
@@ -282,7 +282,7 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS NOT GREATER OR EQUAL'),
+                new Token\ComparisonToken('IS NOT GREATER OR EQUAL THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(1000),
                 new Token\WhitespaceToken("\n"),
@@ -312,9 +312,103 @@ END');
                 new Token\WhitespaceToken(' '),
                 new Token\ObjectToken('USER'),
                 new Token\WhitespaceToken(' '),
-                new Token\ComparisonToken('IS NOT LESS'),
+                new Token\ComparisonToken('IS NOT LESS THAN'),
                 new Token\WhitespaceToken(' '),
                 new Token\IntegerToken(-100),
+                new Token\WhitespaceToken("\n"),
+                new Token\EndToken('END'),
+            ),
+            $result
+        );
+    }
+
+    public function testAlternativeComparisonNames()
+    {
+        $result = $this->parser->parse('RETURN TRUE WHEN ALL RULES APPLY
+BEGIN
+LAST LOGIN OF USER WAS NOT LESS THAN OR EQUAL -100
+END');
+        $this->assertEqualTokenStreams(
+            array(
+                new Token\ReturnToken('RETURN'),
+                new Token\WhitespaceToken(' '),
+                new Token\BooleanToken('TRUE'),
+                new Token\WhitespaceToken(' '),
+                new Token\WhenToken('WHEN'),
+                new Token\WhitespaceToken(' '),
+                new Token\EvaluationToken('ALL'),
+                new Token\WhitespaceToken("\n"),
+                new Token\BeginToken('BEGIN'),
+                new Token\WhitespaceToken("\n"),
+                new Token\PropertyToken('LAST LOGIN'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectOperatorToken('OF'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectToken('USER'),
+                new Token\WhitespaceToken(' '),
+                new Token\ComparisonToken('WAS NOT LESS THAN OR EQUAL'),
+                new Token\WhitespaceToken(' '),
+                new Token\IntegerToken(-100),
+                new Token\WhitespaceToken("\n"),
+                new Token\EndToken('END'),
+            ),
+            $result
+        );
+        $result = $this->parser->parse('RETURN TRUE WHEN ALL RULES APPLY
+BEGIN
+YESTERDAYS FRIENDS OF USER WERE NOT 10
+END');
+        $this->assertEqualTokenStreams(
+            array(
+                new Token\ReturnToken('RETURN'),
+                new Token\WhitespaceToken(' '),
+                new Token\BooleanToken('TRUE'),
+                new Token\WhitespaceToken(' '),
+                new Token\WhenToken('WHEN'),
+                new Token\WhitespaceToken(' '),
+                new Token\EvaluationToken('ALL'),
+                new Token\WhitespaceToken("\n"),
+                new Token\BeginToken('BEGIN'),
+                new Token\WhitespaceToken("\n"),
+                new Token\PropertyToken('YESTERDAYS FRIENDS'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectOperatorToken('OF'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectToken('USER'),
+                new Token\WhitespaceToken(' '),
+                new Token\ComparisonToken('WERE NOT'),
+                new Token\WhitespaceToken(' '),
+                new Token\IntegerToken(10),
+                new Token\WhitespaceToken("\n"),
+                new Token\EndToken('END'),
+            ),
+            $result
+        );
+        $result = $this->parser->parse('RETURN TRUE WHEN ALL RULES APPLY
+BEGIN
+FRIENDS OF USER ARE GREATER 10
+END');
+        $this->assertEqualTokenStreams(
+            array(
+                new Token\ReturnToken('RETURN'),
+                new Token\WhitespaceToken(' '),
+                new Token\BooleanToken('TRUE'),
+                new Token\WhitespaceToken(' '),
+                new Token\WhenToken('WHEN'),
+                new Token\WhitespaceToken(' '),
+                new Token\EvaluationToken('ALL'),
+                new Token\WhitespaceToken("\n"),
+                new Token\BeginToken('BEGIN'),
+                new Token\WhitespaceToken("\n"),
+                new Token\PropertyToken('FRIENDS'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectOperatorToken('OF'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectToken('USER'),
+                new Token\WhitespaceToken(' '),
+                new Token\ComparisonToken('ARE GREATER'),
+                new Token\WhitespaceToken(' '),
+                new Token\IntegerToken(10),
                 new Token\WhitespaceToken("\n"),
                 new Token\EndToken('END'),
             ),

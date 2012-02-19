@@ -75,6 +75,18 @@ class Parser
 
     protected function processAll($value)
     {
+        $value = preg_replace('/\s*(?<comment>#[^\n]+)$/sm', '', $value);
+
+        return $this->processNaked($value);
+    }
+
+    protected function processComment($value)
+    {
+        return false;
+    }
+
+    protected function processNaked($value)
+    {
         $regex = '/
             (?<whitespace0>\s*)
             (?<return>RETURN)

@@ -416,6 +416,42 @@ END');
         );
     }
 
+    public function testComments()
+    {
+        $result = $this->parser->parse('# This is a comment
+RETURN TRUE WHEN ALL RULES APPLY
+BEGIN # This is a comment too
+FRIENDS OF USER ARE GREATER 10# And another comment
+END# Comment at the end');
+        $this->assertEqualTokenStreams(
+            array(
+                new Token\WhitespaceToken("\n"),
+                new Token\ReturnToken('RETURN'),
+                new Token\WhitespaceToken(' '),
+                new Token\BooleanToken('TRUE'),
+                new Token\WhitespaceToken(' '),
+                new Token\WhenToken('WHEN'),
+                new Token\WhitespaceToken(' '),
+                new Token\EvaluationToken('ALL'),
+                new Token\WhitespaceToken("\n"),
+                new Token\BeginToken('BEGIN'),
+                new Token\WhitespaceToken("\n"),
+                new Token\PropertyToken('FRIENDS'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectOperatorToken('OF'),
+                new Token\WhitespaceToken(' '),
+                new Token\ObjectToken('USER'),
+                new Token\WhitespaceToken(' '),
+                new Token\ComparisonToken('ARE GREATER'),
+                new Token\WhitespaceToken(' '),
+                new Token\IntegerToken(10),
+                new Token\WhitespaceToken("\n"),
+                new Token\EndToken('END'),
+            ),
+            $result
+        );
+    }
+
     protected function assertEqualTokenStreams($expected, $got)
     {
         $this->assertEquals($expected, $got);

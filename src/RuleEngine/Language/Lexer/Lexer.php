@@ -1,5 +1,5 @@
 <?php
-namespace RuleEngine\Language;
+namespace RuleEngine\Language\Lexer;
 
 class Lexer
 {

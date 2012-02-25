@@ -1,6 +1,8 @@
 <?php
 namespace RuleEngine\Language\AST;
 
+use RuleEngine\Language\AST\Visitor\VisitorInterface;
+
 class RootNode extends AbstractNode
 {
     private $returnStatements;
@@ -10,8 +12,11 @@ class RootNode extends AbstractNode
         $this->returnStatements = $returnStatements;
     }
 
-    public function getReturnStatements()
+    public function accept(VisitorInterface $visitor)
     {
-        return $this->returnStatements;
+        foreach ($this->returnStatements as $returnStatement) {
+            $returnStatement->accept($visitor);
+        }
+        $this->acceptExtraTokens($visitor);
     }
 }

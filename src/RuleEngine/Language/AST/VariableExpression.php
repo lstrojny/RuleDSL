@@ -3,11 +3,16 @@ namespace RuleEngine\Language\AST;
 
 use RuleEngine\Language\AST\Visitor\VisitorInterface;
 
-class BooleanExpression extends AbstractNode
+class VariableExpression extends AbstractNode
 {
+    private $tokens;
+
+    public function __construct(array $tokens)
+    {
+        $this->tokens = $tokens;
+    }
+
     public function accept(VisitorInterface $visitor)
     {
-        $visitor->visitBooleanExpression($this);
-        parent::accept($visitor);
     }
 }

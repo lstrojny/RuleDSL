@@ -23,11 +23,21 @@ class Parser
         return $this->rootNode();
     }
 
+    /**
+     * rootNode = { returnStatements }
+     *
+     * @return \RuleEngine\Language\AST\RootNode
+     */
     private function rootNode()
     {
         return new AST\RootNode($this->tokens, $this->returnStatements());
     }
 
+    /**
+     * returnStatements = { returnStatement }
+     *
+     * @return \RuleEngine\Language\AST\ReturnStatement[]
+     */
     private function returnStatements()
     {
         $returnStatements = [];
@@ -39,28 +49,43 @@ class Parser
         return $returnStatements;
     }
 
+    /**
+     * returnStatement = "RETURN" booleanExpression quantifierStatement ruleStatement
+     *
+     * @return \RuleEngine\Language\AST\ReturnStatement
+     */
     private function returnStatement()
     {
+        $returnExtraTokens = $quantifierExtraTokens = $booleanExtraTokens = [];
+
         $this->assertToken([Lexer::T_RETURN]);
         $returnToken = $this->currentToken();
 
-        $this->nextToken();
+        $this->nextToken($returnExtraTokens);
         $booleanExpression = $this->booleanExpression();
 
-        $this->nextToken();
-        $quantifierExpression = $this->quantifierExpression();
+        $this->nextToken($booleanExtraTokens);
+        $booleanExpression->addExtraTokens($booleanExtraTokens);
+        $quantifierStatement = $this->quantifierStatement();
 
         $this->nextToken();
         $ruleStatement = $this->ruleStatement();
 
-        return new AST\ReturnStatement(
+        $returnStatement = new AST\ReturnStatement(
             $returnToken,
             $booleanExpression,
-            $quantifierExpression,
+            $quantifierStatement,
             $ruleStatement
         );
+        $returnStatement->addExtraTokens($returnExtraTokens);
+        return $returnStatement;
     }
 
+    /**
+     * booleanExpression = "TRUE" | "FALSE"
+     *
+     * @return \RuleEngine\Language\AST\BooleanExpression
+     */
     private function booleanExpression()
     {
         $booleanToken = $this->assertToken([Lexer::T_BOOLEAN]);
@@ -68,29 +93,121 @@ class Parser
         return new AST\BooleanExpression($booleanToken);
     }
 
-    private function quantifierExpression()
+    /**
+     * quantifierStatement = ifStatement ("ANY" | "ALL") ["MATCH"]
+     *
+     * @return \RuleEngine\Language\AST\QuantifierStatement
+     */
+    private function quantifierStatement()
     {
-        $this->assertToken([Lexer::T_IF]);
+        $ifExtraTokens = [];
+        $ifToken = $this->assertToken([Lexer::T_IF]);
+        $ifStatement = new AST\IfStatement($ifToken);
 
-        $this->nextToken();
+        $this->nextToken($ifExtraTokens);
+        $ifStatement->addExtraTokens($ifExtraTokens);
+
         $quantifierToken = $this->assertToken([Lexer::T_QUANTIFIER]);
 
-        return new AST\QuantifierExpression($quantifierToken);
+        $quantifierStatement = new AST\QuantifierStatement($quantifierToken, $ifStatement);
+
+        /** Find optional T_MATCH token */
+        if ($quantifierExtraTokens = $this->tryAhead([Lexer::T_MATCH])) {
+            $quantifierStatement->addExtraToken($quantifierExtraTokens);
+        }
+
+        return $quantifierStatement;
     }
 
     private function ruleStatement()
     {
-        $this->assertToken([Lexer::T_MATCH, Lexer::T_IF]);
-
-        if ($this->currentToken('type') === Lexer::T_MATCH) {
-            $this->nextToken();
-        }
-
-        $this->assertToken([Lexer::T_IF]);
+        $ifToken = $this->assertToken([Lexer::T_IF]);
 
         $this->nextToken();
-        $booleanExpression = $this->booleanExpression();
-        return new AST\RuleStatement($booleanExpression);
+        $ruleStatement = new AST\RuleStatement($this->genericExpression());
+        $ruleStatement->addExtraToken($ifToken);
+        return $ruleStatement;
+    }
+
+    private function genericExpression()
+    {
+        $this->assertToken([Lexer::T_BOOLEAN, Lexer::T_STRING]);
+
+        if ($this->currentToken('type') === Lexer::T_BOOLEAN) {
+            return new AST\GenericExpression($this->booleanExpression());
+        }
+
+        return new AST\GenericExpression($this->variableExpression());
+    }
+
+    private function variableExpression()
+    {
+        $this->assertToken([Lexer::T_STRING]);
+
+        if ($this->tryAhead([Lexer::T_OF], [Lexer::T_WHITESPACE, Lexer::T_STRING])) {
+            return $this->propertyExpression();
+        }
+
+        return $this->singleVariableExpression();
+    }
+
+    private function singleVariableExpression()
+    {
+        return new AST\VariableExpression($this->captureAhead([Lexer::T_WHITESPACE, Lexer::T_STRING]));
+    }
+
+    private function propertyExpression()
+    {
+        $tokens = $this->captureAhead([Lexer::T_WHITESPACE, Lexer::T_STRING], [Lexer::T_OF]);
+        var_dump($tokens);
+    }
+
+    private function captureAhead(array $tokens, array $until = [Lexer::T_END])
+    {
+        var_dump($tokens);
+
+        $position = $this->position;
+
+        $captured = [];
+
+        while (in_array($this->tokens[$position]['type'], array_merge($tokens, $until), true)) {
+            if ($position >= $this->tokenCount) {
+                $this->syntaxError($tokens);
+            }
+
+            if (in_array($this->tokens[$position]['type'], $until, true)) {
+                $this->position = $position;
+                return $captured;
+            }
+
+            $captured[] = $this->tokens[$position];
+
+            ++$position;
+        }
+
+        $this->syntaxError($tokens);
+    }
+
+    private function tryAhead(array $tokens, array $ignore = [Lexer::T_WHITESPACE])
+    {
+        $position = $this->position;
+        $captured = [];
+
+        do {
+            if (++$position >= $this->tokenCount) {
+                return false;
+            }
+
+            if (in_array($this->tokens[$position]['type'], $tokens)) {
+                $this->position = $position;
+                return $captured;
+            }
+
+            $captured[] = $this->tokens[$position];
+
+        } while (in_array($this->tokens[$position]['type'], $ignore, true));
+
+        return false;
     }
 
     private function currentToken($field = null)
@@ -104,13 +221,16 @@ class Parser
         return $currentToken;
     }
 
-    private function nextToken(array $ignore = [Lexer::T_WHITESPACE])
+    private function nextToken(array &$extraTokens = [], array $ignore = [Lexer::T_WHITESPACE])
     {
         do {
             if (++$this->position >= $this->tokenCount) {
                 return false;
             }
+            $extraTokens[] = $this->currentToken();
         } while (in_array($this->currentToken('type'), $ignore, true));
+
+        array_pop($extraTokens);
 
         return true;
     }
@@ -123,6 +243,7 @@ class Parser
                 $tokens
             ),
             $this->currentToken('value'),
+            Lexer::getTokenName($this->currentToken('type')),
             $this->currentToken('start'),
             $this->currentToken('end'),
             $this->currentToken('line'),

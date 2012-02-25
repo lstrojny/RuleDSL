@@ -58,7 +58,7 @@ class Lexer
         return $tokens;
     }
 
-    private function getToken(array $match)
+    public function getToken(array $match)
     {
         return [
             'value' => $match[0],

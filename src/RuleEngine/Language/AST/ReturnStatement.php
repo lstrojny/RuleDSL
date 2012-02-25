@@ -1,34 +1,38 @@
 <?php
 namespace RuleEngine\Language\AST;
 
+use RuleEngine\Language\AST\Visitor\VisitorInterface;
+
 class ReturnStatement extends AbstractNode
 {
     private $booleanExpression;
 
-    private $quantifierExpression;
+    private $quantifierStatement;
 
     private $ruleStatement;
 
-    public function __construct(array $token, BooleanExpression $booleanExpression, QuantifierExpression $quantifierExpression, RuleStatement $ruleStatement)
+    public function __construct(
+        array $token,
+        BooleanExpression $booleanExpression,
+        QuantifierStatement $quantifierStatement,
+        RuleStatement $ruleStatement
+    )
     {
         parent::__construct($token);
         $this->booleanExpression = $booleanExpression;
-        $this->quantifierExpression = $quantifierExpression;
+        $this->quantifierStatement = $quantifierStatement;
         $this->ruleStatement = $ruleStatement;
     }
 
-    public function getBooleanExpression()
+    public function accept(VisitorInterface $visitor)
     {
-        return $this->booleanExpression;
-    }
+        $visitor->visitReturnStatement($this);
+        var_dump($this->getToken());
+        $visitor->visitToken($this->getToken());
+        $this->acceptExtraTokens($visitor);
 
-    public function getQuantifierExpression()
-    {
-        return $this->quantifierExpression;
-    }
-
-    public function getRuleStatement()
-    {
-        return $this->ruleStatement;
+        $this->booleanExpression->accept($visitor);
+        $this->quantifierStatement->accept($visitor);
+        $this->ruleStatement->accept($visitor);
     }
 }

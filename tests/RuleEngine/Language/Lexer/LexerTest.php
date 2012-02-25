@@ -34,11 +34,33 @@ class LexerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function test_T_WHITESPACE()
+    public function testGetSymbolName()
+    {
+        $this->assertSame('T_STRING', Lexer::getTokenName(Lexer::T_STRING));
+    }
+
+    public function test_T_END()
+    {
+        $lexer = new Lexer('');
+        $tokens = $lexer->scan();
+        $this->assertCount(1, $tokens);
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Lexer::T_END,
+                'start' => 0,
+                'end'   => 0,
+            ],
+            $tokens[0]
+        );
+    }
+
+    public function test_T_WHITESPACE_T_END()
     {
         $lexer = new Lexer(' ');
         $tokens = $lexer->scan();
-        $this->assertCount(1, $tokens);
+        $this->assertCount(2, $tokens);
         $this->assertSame(
             [
                 'value' => ' ',
@@ -49,13 +71,23 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             ],
             $tokens[0]
         );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Lexer::T_END,
+                'start' => 1,
+                'end'   => 1,
+            ],
+            $tokens[1]
+        );
     }
 
     public function test_T_BOOLEAN()
     {
         $lexer = new Lexer("RETURN TRUE\nFALSE");
         $tokens = $lexer->scan();
-        $this->assertCount(5, $tokens);
+        $this->assertCount(6, $tokens);
         $this->assertSame(
             [
                 'value' => 'RETURN',
@@ -106,13 +138,23 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             ],
             $tokens[4]
         );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 2,
+                'type'  => Lexer::T_END,
+                'start' => 17,
+                'end'   => 17,
+            ],
+            $tokens[5]
+        );
     }
 
     public function test_T_QUANTIFIER_T_MATCH()
     {
         $lexer = new Lexer("ANY\nALL\nMATCH");
         $tokens = $lexer->scan();
-        $this->assertCount(5, $tokens);
+        $this->assertCount(6, $tokens);
         $this->assertSame(
             [
                 'value' => 'ANY',
@@ -163,13 +205,23 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             ),
             $tokens[4]
         );
+        $this->assertSame(
+            array(
+                'value' => '',
+                'line'  => 3,
+                'type'  => Lexer::T_END,
+                'start' => 13,
+                'end'   => 13,
+            ),
+            $tokens[5]
+        );
     }
 
     public function test_T_IF()
     {
         $lexer = new Lexer("IF WHEN");
         $tokens = $lexer->scan();
-        $this->assertCount(3, $tokens);
+        $this->assertCount(4, $tokens);
         $this->assertSame(
             [
                 'value' => 'IF',
@@ -200,13 +252,23 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             ],
             $tokens[2]
         );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Lexer::T_END,
+                'start' => 7,
+                'end'   => 7,
+            ],
+            $tokens[3]
+        );
     }
 
     public function test_T_OF()
     {
         $lexer = new Lexer('PROPERTY_NAME OF OBJECT_NAME');
         $tokens = $lexer->scan();
-        $this->assertCount(5, $tokens);
+        $this->assertCount(6, $tokens);
         $this->assertSame(
             [
                 'value' => 'PROPERTY_NAME',
@@ -257,13 +319,23 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             ],
             $tokens[4]
         );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Lexer::T_END,
+                'start' => 28,
+                'end'   => 28,
+            ],
+            $tokens[5]
+        );
     }
 
     public function test_T_IS()
     {
         $lexer = new Lexer("IS SOMETHING");
         $tokens = $lexer->scan();
-        $this->assertCount(3, $tokens);
+        $this->assertCount(4, $tokens);
         $this->assertSame(
             [
                 'value' => 'IS',
@@ -293,6 +365,16 @@ class LexerTest extends \PHPUnit_Framework_TestCase
                 'end'   => 12,
             ],
             $tokens[2]
+        );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Lexer::T_END,
+                'start' => 12,
+                'end'   => 12,
+            ],
+            $tokens[3]
         );
     }
 }

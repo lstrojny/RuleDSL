@@ -1,17 +1,20 @@
 <?php
 namespace RuleEngine\Language\Lexer;
 
+use ReflectionClass;
+
 class Lexer
 {
-    const T_WHITESPACE = 0b0000000001;
-    const T_STRING     = 0b0000000010;
-    const T_RETURN     = 0b0000000110;
-    const T_BOOLEAN    = 0b0000001010;
-    const T_QUANTIFIER = 0b0000001010;
-    const T_MATCH      = 0b0000010010;
-    const T_IF         = 0b0000100010;
-    const T_OF         = 0b0001000010;
-    const T_IS         = 0b0010000010;
+    const T_WHITESPACE = 0b000000000001;
+    const T_END        = 0b000000000010;
+    const T_STRING     = 0b000000000100;
+    const T_RETURN     = 0b000000001100;
+    const T_BOOLEAN    = 0b000000010100;
+    const T_QUANTIFIER = 0b000000100100;
+    const T_MATCH      = 0b000001000100;
+    const T_IF         = 0b000010000100;
+    const T_OF         = 0b000100000100;
+    const T_IS         = 0b001000000100;
 
     private $string;
 
@@ -20,6 +23,16 @@ class Lexer
     public function __construct($string)
     {
         $this->string = $string;
+    }
+
+    public static function getTokenName($tokenValue)
+    {
+        $class = new ReflectionClass(get_called_class());
+        foreach ($class->getConstants() as $name => $value) {
+            if ($value === $tokenValue) {
+                return $name;
+            }
+        }
     }
 
     public function scan()
@@ -32,6 +45,15 @@ class Lexer
         foreach ($matches as $match) {
             $tokens[] = $this->getToken($match);
         }
+
+        $lastToken = end($tokens) ?: array('end' => 0);
+        $tokens[] = array(
+            'value' => '',
+            'line'  => $this->line,
+            'type'  => self::T_END,
+            'start' => $lastToken['end'],
+            'end' => $lastToken['end'],
+        );
 
         return $tokens;
     }

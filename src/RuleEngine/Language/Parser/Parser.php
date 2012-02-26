@@ -69,12 +69,12 @@ class Parser
 
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $booleanExpression->addExtraTokens($this->tokenStream->getSkippedTokens());
+        $booleanExpression->addDecoratingTokens($this->tokenStream->getSkippedTokens());
         $quantifierStatement = $this->quantifierStatement();
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
         $ruleStatement = $this->ruleStatement();
-        $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+        $quantifierStatement->addDecoratingTokens($this->tokenStream->getSkippedTokens());
 
         $returnStatement = new AST\ReturnStatement(
             $returnToken,
@@ -82,7 +82,7 @@ class Parser
             $quantifierStatement,
             $ruleStatement
         );
-        $returnStatement->addExtraTokens($returnExtraTokens);
+        $returnStatement->addDecoratingTokens($returnExtraTokens);
         return $returnStatement;
     }
 
@@ -109,21 +109,21 @@ class Parser
         $ifStatement = new AST\IfStatement($ifToken);
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $ifStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+        $ifStatement->addDecoratingTokens($this->tokenStream->getSkippedTokens());
 
         $quantifierToken = $this->tokenStream->assert([GrammarInterface::T_QUANTIFIER]);
         $quantifierStatement = new AST\QuantifierStatement($quantifierToken, $ifStatement);
 
         if ($this->tokenStream->lookAhead([GrammarInterface::T_RULE], [GrammarInterface::T_WHITESPACE])) {
             $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-            $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
-            $quantifierStatement->addExtraToken($this->tokenStream->getCurrentToken());
+            $quantifierStatement->addDecoratingTokens($this->tokenStream->getSkippedTokens());
+            $quantifierStatement->addDecoratingToken($this->tokenStream->getCurrentToken());
         }
 
         if ($this->tokenStream->lookAhead([GrammarInterface::T_MATCH], [GrammarInterface::T_WHITESPACE])) {
             $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-            $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
-            $quantifierStatement->addExtraToken($this->tokenStream->getCurrentToken());
+            $quantifierStatement->addDecoratingTokens($this->tokenStream->getSkippedTokens());
+            $quantifierStatement->addDecoratingToken($this->tokenStream->getCurrentToken());
         }
 
         return $quantifierStatement;
@@ -135,7 +135,7 @@ class Parser
         $ifStatement = new AST\IfStatement($ifToken);
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $ifStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+        $ifStatement->addDecoratingTokens($this->tokenStream->getSkippedTokens());
 
         return new AST\RuleStatement($ifStatement, $this->genericExpression());
     }
@@ -187,8 +187,8 @@ class Parser
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
 
         $propertyExpression = new AST\PropertyExpression($tokens, $this->variableExpression());
-        $propertyExpression->addExtraToken($ofToken);
-        $propertyExpression->addExtraTokens($this->tokenStream->getSkippedTokens());
+        $propertyExpression->addDecoratingToken($ofToken);
+        $propertyExpression->addDecoratingTokens($this->tokenStream->getSkippedTokens());
 
         return $propertyExpression;
     }

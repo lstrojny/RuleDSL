@@ -17,6 +17,6 @@ class VariableExpression extends AbstractNode
         foreach ($this->tokens as $token) {
             $visitor->visitToken($token);
         }
-        $this->acceptExtraTokens($visitor);
+        $this->acceptDecoratingTokens($visitor);
     }
 }

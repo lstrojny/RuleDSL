@@ -17,6 +17,6 @@ class RootNode extends AbstractNode
         foreach ($this->returnStatements as $returnStatement) {
             $returnStatement->accept($visitor);
         }
-        $this->acceptExtraTokens($visitor);
+        $this->acceptDecoratingTokens($visitor);
     }
 }

@@ -14,5 +14,5 @@ interface VisitorInterface
     public function visitVariableExpression(AST\VariableExpression $variableExpression);
     public function visitGenericExpression(AST\GenericExpression $genericExpression);
     public function visitToken(array $token);
-    public function visitExtraToken(array $token);
+    public function visitDecoratingToken(array $token);
 }

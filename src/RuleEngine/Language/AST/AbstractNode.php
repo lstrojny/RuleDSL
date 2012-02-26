@@ -8,7 +8,7 @@ abstract class AbstractNode implements VisitableInterface
 {
     private $token;
 
-    private $extraTokens = [];
+    private $decoratingTokens = [];
 
     public function __construct(array $token)
     {
@@ -20,33 +20,33 @@ abstract class AbstractNode implements VisitableInterface
         return $this->token;
     }
 
-    public function addExtraToken(array $token)
+    public function addDecoratingToken(array $token)
     {
-        $this->extraTokens[] = $token;
+        $this->decoratingTokens[] = $token;
     }
 
-    public function addExtraTokens(array $tokens)
+    public function addDecoratingTokens(array $tokens)
     {
         foreach ($tokens as $token) {
-            $this->addExtraToken($token);
+            $this->addDecoratingToken($token);
         }
     }
 
-    public function getExtraTokens()
+    public function getDecoratingTokens()
     {
-        return $this->extraTokens;
+        return $this->decoratingTokens;
     }
 
     public function accept(VisitorInterface $visitor)
     {
         $visitor->visitToken($this->token);
-        $this->acceptExtraTokens($visitor);
+        $this->acceptDecoratingTokens($visitor);
     }
 
-    protected function acceptExtraTokens(VisitorInterface $visitor)
+    protected function acceptDecoratingTokens(VisitorInterface $visitor)
     {
-        foreach ($this->extraTokens as $token) {
-            $visitor->visitExtraToken($token);
+        foreach ($this->decoratingTokens as $token) {
+            $visitor->visitDecoratingToken($token);
         }
     }
 }

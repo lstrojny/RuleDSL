@@ -18,7 +18,7 @@ class Printer implements VisitorInterface
         $this->string .= $token['value'];
     }
 
-    public function visitExtraToken(array $token)
+    public function visitDecoratingToken(array $token)
     {
         $this->string .= $token['value'];
     }

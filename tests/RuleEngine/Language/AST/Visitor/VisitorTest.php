@@ -51,7 +51,7 @@ class TestVisitor implements VisitorInterface
         $this->track(__FUNCTION__, $token);
     }
 
-    public function visitExtraToken(array $token)
+    public function visitDecoratingToken(array $token)
     {
         $this->track(__FUNCTION__, $token);
     }
@@ -108,15 +108,15 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitBooleanExpressionWithExtraSpace()
     {
         $exp = new AST\BooleanExpression($this->lexer->getToken(['TRUE', 10]));
-        $exp->addExtraToken($this->lexer->getToken([' ', 14]));
-        $exp->addExtraToken($this->lexer->getToken(["\n", 15]));
+        $exp->addDecoratingToken($this->lexer->getToken([' ', 14]));
+        $exp->addDecoratingToken($this->lexer->getToken(["\n", 15]));
         $exp->accept($this->visitor);
         $this->assertSame(
             [
                 ['visitBooleanExpression', 'BooleanExpression'],
                 ['visitToken', ['TRUE', 'T_BOOLEAN']],
-                ['visitExtraToken', [' ', 'T_WHITESPACE']],
-                ['visitExtraToken', ["\n", 'T_WHITESPACE']],
+                ['visitDecoratingToken', [' ', 'T_WHITESPACE']],
+                ['visitDecoratingToken', ["\n", 'T_WHITESPACE']],
             ],
             $this->visitor->getVisits()
         );
@@ -128,7 +128,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             $this->lexer->getToken(['ANY', 1]),
             new AST\IfStatement($this->lexer->getToken(['IF', 2]))
         );
-        $exp->addExtraToken($this->lexer->getToken([' ', 5]));
+        $exp->addDecoratingToken($this->lexer->getToken([' ', 5]));
         $exp->accept($this->visitor);
         $this->assertSame(
             [
@@ -136,7 +136,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
                 ['visitIfStatement', 'IfStatement'],
                 ['visitToken', ['IF', 'T_IF']],
                 ['visitToken', ['ANY', 'T_QUANTIFIER']],
-                ['visitExtraToken', [' ', 'T_WHITESPACE']],
+                ['visitDecoratingToken', [' ', 'T_WHITESPACE']],
             ],
             $this->visitor->getVisits()
         );

@@ -28,7 +28,7 @@ class ReturnStatement extends AbstractNode
     {
         $visitor->visitReturnStatement($this);
         $visitor->visitToken($this->getToken());
-        $this->acceptExtraTokens($visitor);
+        $this->acceptDecoratingTokens($visitor);
 
         $this->booleanExpression->accept($visitor);
         $this->quantifierStatement->accept($visitor);

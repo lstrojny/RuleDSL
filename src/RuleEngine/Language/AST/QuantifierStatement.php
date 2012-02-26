@@ -18,6 +18,6 @@ class QuantifierStatement extends AbstractNode
         $visitor->visitQuantifierStatement($this);
         $this->ifStatement->accept($visitor);
         $visitor->visitToken($this->getToken());
-        $this->acceptExtraTokens($visitor);
+        $this->acceptDecoratingTokens($visitor);
     }
 }

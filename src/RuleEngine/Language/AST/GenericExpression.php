@@ -15,7 +15,7 @@ class GenericExpression extends AbstractNode
     public function accept(VisitorInterface $visitor)
     {
         $visitor->visitGenericExpression($this);
-        $this->acceptExtraTokens($visitor);
+        $this->acceptDecoratingTokens($visitor);
         $this->expression->accept($visitor);
     }
 }

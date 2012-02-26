@@ -5,7 +5,7 @@ use RuleEngine\Language\AST\Visitor\VisitorInterface;
 
 class ReturnStatement extends AbstractNode
 {
-    private $booleanExpression;
+    private $valueExpression;
 
     private $quantifierStatement;
 
@@ -13,13 +13,13 @@ class ReturnStatement extends AbstractNode
 
     public function __construct(
         array $token,
-        BooleanExpression $booleanExpression,
+        ExpressionInterface $valueExpression,
         QuantifierStatement $quantifierStatement,
         RuleStatement $ruleStatement
     )
     {
         parent::__construct($token);
-        $this->booleanExpression = $booleanExpression;
+        $this->valueExpression = $valueExpression;
         $this->quantifierStatement = $quantifierStatement;
         $this->ruleStatement = $ruleStatement;
     }
@@ -30,7 +30,7 @@ class ReturnStatement extends AbstractNode
         $visitor->visitToken($this->getToken());
         $this->acceptDecoratingTokens($visitor);
 
-        $this->booleanExpression->accept($visitor);
+        $this->valueExpression->accept($visitor);
         $this->quantifierStatement->accept($visitor);
         $this->ruleStatement->accept($visitor);
     }

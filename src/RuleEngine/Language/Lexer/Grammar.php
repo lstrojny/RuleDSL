@@ -78,7 +78,7 @@ class Grammar implements GrammarInterface
 
             default:
                 switch (true) {
-                    case (bool) preg_match('/^(?:[1-9](\.\d+)?|0)$/', $value):
+                    case (bool) preg_match('/^(?:(?:[1-9]\d*|0)(\.\d+)?|0)$/', $value):
                         $type = self::T_NUMBER;
                         break;
 

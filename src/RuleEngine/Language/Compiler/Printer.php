@@ -51,7 +51,7 @@ class Printer implements VisitorInterface
     {
     }
 
-    public function visitGenericExpression(AST\GenericExpression $genericExpression)
+    public function visitNumericExpression(AST\NumericExpression $numericExpression)
     {
     }
 }

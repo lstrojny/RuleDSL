@@ -25,7 +25,7 @@ class Lexer
         /(?:
             (\s)                        # Single space
             |
-            ([\-\+])                    # Plus, minus (algebraic signs)
+            ([\-\+])?                   # Plus, minus (algebraic signs)
             (
                 (?:                     # Avoid invalid numbers like 001 (treat as string)
                     [1-9][0-9]*         # Multi digit number starts always with 1-9

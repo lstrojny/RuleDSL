@@ -33,7 +33,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             'RuleEngine\Language\Lexer\UnexpectedTokenException',
-            'Expected T_BOOLEAN, got "FOO" (T_STRING) at position 7 - 10, line 1 near "RETURN FOO'
+            'Expected T_NUMBER, T_MINUS, T_PLUS, T_BOOLEAN, got "FOO" (T_STRING) at position 7 - 10, line 1 near "RETURN FOO'
         );
         $parser->parse();
     }
@@ -190,5 +190,66 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $rootNode = $parser->parse();
         $rootNode->accept($this->printer);
         $this->assertSame($string, (string) $this->printer);
+    }
+
+    public function test_T_RETURN_T_NUMBER_T_IF_T_QUANTIFIER_T_IF_T_VARIABLE()
+    {
+        $grammar = new Grammar();
+        $string = 'RETURN 100 WHEN ALL RULES MATCH IF VARIABLE NAME';
+        $lexer = new Lexer($string, $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+        $rootNode = $parser->parse();
+        $rootNode->accept($this->printer);
+        $this->assertSame($string, (string) $this->printer);
+    }
+
+    public function test_T_RETURN_T_MINUS_T_NUMBER_T_IF_T_QUANTIFIER_T_IF_T_VARIABLE()
+    {
+        $grammar = new Grammar();
+        $string = 'RETURN -100 WHEN ALL RULES MATCH IF VARIABLE NAME';
+        $lexer = new Lexer($string, $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+        $rootNode = $parser->parse();
+        $rootNode->accept($this->printer);
+        $this->assertSame($string, (string) $this->printer);
+    }
+
+    public function test_T_RETURN_T_PLUS_T_NUMBER_T_IF_T_QUANTIFIER_T_IF_T_VARIABLE()
+    {
+        $grammar = new Grammar();
+        $string = 'RETURN +100.10 WHEN ALL RULES MATCH IF VARIABLE NAME';
+        $lexer = new Lexer($string, $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+        $rootNode = $parser->parse();
+        $rootNode->accept($this->printer);
+        $this->assertSame($string, (string) $this->printer);
+    }
+
+    public function testIsExpected_T_RETURN_T_PLUS_T_IF_T_QUANTIFIER_T_IF_T_VARIABLE()
+    {
+        $grammar = new Grammar();
+        $string = 'RETURN + WHEN ALL RULES MATCH IF VARIABLE NAME';
+        $lexer = new Lexer($string, $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+
+        $this->setExpectedException(
+            'RuleEngine\Language\Lexer\UnexpectedTokenException',
+            'Expected T_NUMBER, got "WHEN" (T_IF) at position 9 - 13, line 1 near "RETURN + WHEN ALL RULES MATCH"'
+        );
+        $rootNode = $parser->parse();
+    }
+
+    public function testIsExpected_T_RETURN_T_MINUS_T_IF_T_QUANTIFIER_T_IF_T_VARIABLE()
+    {
+        $grammar = new Grammar();
+        $string = 'RETURN - WHEN ALL RULES MATCH IF VARIABLE NAME';
+        $lexer = new Lexer($string, $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+
+        $this->setExpectedException(
+            'RuleEngine\Language\Lexer\UnexpectedTokenException',
+            'Expected T_NUMBER, got "WHEN" (T_IF) at position 9 - 13, line 1 near "RETURN - WHEN ALL RULES MATCH"'
+        );
+        $rootNode = $parser->parse();
     }
 }

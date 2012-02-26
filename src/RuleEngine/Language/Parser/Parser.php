@@ -65,11 +65,10 @@ class Parser
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
         $returnExtraTokens = $this->tokenStream->getSkippedTokens();
-        $booleanExpression = $this->booleanExpression();
-
+        $valueExpression = $this->valueExpression();
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $booleanExpression->addDecoratingTokens($this->tokenStream->getSkippedTokens());
+        $valueExpression->addDecoratingTokens($this->tokenStream->getSkippedTokens());
         $quantifierStatement = $this->quantifierStatement();
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
@@ -78,12 +77,60 @@ class Parser
 
         $returnStatement = new AST\ReturnStatement(
             $returnToken,
-            $booleanExpression,
+            $valueExpression,
             $quantifierStatement,
             $ruleStatement
         );
         $returnStatement->addDecoratingTokens($returnExtraTokens);
         return $returnStatement;
+    }
+
+    /**
+     * valueExpression = numericExpression | booleanExpression | stringExpression
+     */
+    private function valueExpression()
+    {
+        $this->tokenStream->assert(
+            [
+                GrammarInterface::T_NUMBER,
+                GrammarInterface::T_MINUS,
+                GrammarInterface::T_PLUS,
+                GrammarInterface::T_BOOLEAN,
+            ]
+        );
+
+        switch ($this->tokenStream->getCurrentToken('type')) {
+            case GrammarInterface::T_MINUS:
+            case GrammarInterface::T_PLUS:
+            case GrammarInterface::T_NUMBER:
+                return $this->numericExpression();
+                break;
+
+            case GrammarInterface::T_BOOLEAN:
+                return $this->booleanExpression();
+                break;
+        }
+    }
+
+    /**
+     * numericExpression = [ "+" | "-" ]
+     * ( "0"
+     *      | ( "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" )
+     *      [ ( "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ) ]
+     * )
+     */
+    private function numericExpression()
+    {
+        $algebraicSign = null;
+        $signs = [GrammarInterface::T_MINUS, GrammarInterface::T_PLUS];
+        if (in_array($this->tokenStream->getCurrentToken('type'), $signs)) {
+            $algebraicSign = $this->tokenStream->getCurrentToken();
+            $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
+        }
+        $this->tokenStream->assert([GrammarInterface::T_NUMBER]);
+
+        $numberToken = $this->tokenStream->getCurrentToken();
+        return new AST\NumericExpression($numberToken, $algebraicSign);
     }
 
     /**

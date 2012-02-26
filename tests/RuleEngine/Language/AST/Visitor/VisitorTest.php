@@ -61,9 +61,9 @@ class TestVisitor implements VisitorInterface
         $this->track(__FUNCTION__, $ifStatement);
     }
 
-    public function visitGenericExpression(AST\GenericExpression $genericExpression)
+    public function visitNumericExpression(AST\NumericExpression $numericExpression)
     {
-        $this->track(__FUNCTION__, $genericExpression);
+        $this->track(__FUNCTION__, $numericExpression);
     }
 
     public function getVisits()

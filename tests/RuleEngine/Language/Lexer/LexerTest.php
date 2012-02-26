@@ -399,10 +399,10 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_NUMBER()
     {
-        $lexer = new Lexer("1 -1 +1 2.0 -2.0 +2.0", new Grammar());
+        $lexer = new Lexer("1 -1 +1 2.0 -2.0 +2.0 100", new Grammar());
         $tokens = $lexer->scan();
         $tokens = $tokens->toArray();
-        $this->assertCount(16, $tokens);
+        $this->assertCount(18, $tokens);
         $this->assertSame(
             [
                 'value' => '1',
@@ -555,13 +555,33 @@ class LexerTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertSame(
             [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 21,
+                'end'   => 22,
+            ],
+            $tokens[15]
+        );
+        $this->assertSame(
+            [
+                'value' => '100',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 22,
+                'end'   => 25,
+            ],
+            $tokens[16]
+        );
+        $this->assertSame(
+            [
                 'value' => '',
                 'line'  => 1,
                 'type'  => Grammar::T_END,
-                'start' => 21,
-                'end'   => 21,
+                'start' => 25,
+                'end'   => 25,
             ],
-            $tokens[15]
+            $tokens[17]
         );
     }
 

@@ -46,7 +46,7 @@ class Parser
     {
         $returnStatements = [];
 
-        while ($this->tokenStream->next([GrammarInterface::T_WHITESPACE])) {
+        while ($this->tokenStream->next([GrammarInterface::T_WHITESPACE, GrammarInterface::T_END])) {
             $returnStatements[] = $this->returnStatement();
         }
 
@@ -106,7 +106,6 @@ class Parser
      */
     private function quantifierStatement()
     {
-        $ifExtraTokens = [];
         $ifToken = $this->tokenStream->assert([GrammarInterface::T_IF]);
         $ifStatement = new AST\IfStatement($ifToken);
 
@@ -123,7 +122,6 @@ class Parser
             $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
             $quantifierStatement->addExtraToken($this->tokenStream->getCurrentToken());
         }
-
 
         if ($this->tokenStream->lookAhead([GrammarInterface::T_MATCH], [GrammarInterface::T_WHITESPACE])) {
             $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
@@ -186,7 +184,15 @@ class Parser
             [GrammarInterface::T_WHITESPACE, GrammarInterface::T_STRING],
             [GrammarInterface::T_OF]
         );
+
+        $ofToken = $this->tokenStream->getCurrentToken();
+
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $this->tokenStream->assert([GrammarInterface::T_STRING]);
+
+        $propertyExpression = new AST\PropertyExpression($tokens, $this->variableExpression());
+        $propertyExpression->addExtraToken($ofToken);
+        $propertyExpression->addExtraTokens($this->tokenStream->getSkippedTokens());
+
+        return $propertyExpression;
     }
 }

@@ -31,7 +31,7 @@ class TokenStreamTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($stream->next());
     }
 
-    public function testNextTokenWithIgnore()
+    public function testNextTokenWithSkip()
     {
         $stream = new TokenStream(
             [
@@ -48,6 +48,17 @@ class TokenStreamTest extends \PHPUnit_Framework_TestCase
         $stream->next(['T_WHITESPACE']);
         $this->assertSame(['type' => 'T_END', 'value' => ''], $stream->getCurrentToken());
         $this->assertSame([['type' => 'T_WHITESPACE', 'value' => ' ']], $stream->getSkippedTokens());
+    }
+
+    public function testNextSkipEnd()
+    {
+        $stream = new TokenStream(
+            [
+                ['type' => 'T_END', 'value' => '']
+            ],
+            $this->grammar
+        );
+        $this->assertFalse($stream->next(['T_END']));
     }
 
     public function testCapture()

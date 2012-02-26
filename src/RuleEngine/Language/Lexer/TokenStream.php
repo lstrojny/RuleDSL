@@ -50,11 +50,11 @@ class TokenStream implements Countable
     {
         $this->extraTokens = [];
 
-        if (!isset($this->tokens[$this->position + 1])) {
-            return false;
-        }
-
         do {
+            if (!isset($this->tokens[$this->position + 1])) {
+                return false;
+            }
+
             ++$this->position;
             $this->extraTokens[] = $this->getCurrentToken();
         } while (in_array($this->getCurrentToken('type'), $ignoreTypes, true));

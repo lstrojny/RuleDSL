@@ -63,14 +63,29 @@ class Grammar implements GrammarInterface
                 $type = self::T_RULE;
                 break;
 
+            case '-':
+                $type = self::T_MINUS;
+                break;
+
+            case '+':
+                $type = self::T_PLUS;
+                break;
+
             case "\n":
                 $type = self::T_WHITESPACE;
                 ++$line;
                 break;
 
             default:
-                $type = self::T_STRING;
-                break;
+                switch (true) {
+                    case (bool) preg_match('/^(?:[1-9](\.\d+)?|0)$/', $value):
+                        $type = self::T_NUMBER;
+                        break;
+
+                    default:
+                        $type = self::T_STRING;
+                        break;
+                }
         }
 
         return $type;

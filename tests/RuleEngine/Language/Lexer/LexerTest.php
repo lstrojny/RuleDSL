@@ -396,4 +396,210 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             $tokens[3]
         );
     }
+
+    public function test_T_NUMBER()
+    {
+        $lexer = new Lexer("1 -1 +1 2.0 -2.0 +2.0", new Grammar());
+        $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
+        $this->assertCount(16, $tokens);
+        $this->assertSame(
+            [
+                'value' => '1',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 0,
+                'end'   => 1,
+            ],
+            $tokens[0]
+        );
+        $this->assertSame(
+            [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 1,
+                'end'   => 2,
+            ],
+            $tokens[1]
+        );
+        $this->assertSame(
+            [
+                'value' => '-',
+                'line'  => 1,
+                'type'  => Grammar::T_MINUS,
+                'start' => 2,
+                'end'   => 3,
+            ],
+            $tokens[2]
+        );
+        $this->assertSame(
+            [
+                'value' => '1',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 3,
+                'end'   => 4,
+            ],
+            $tokens[3]
+        );
+        $this->assertSame(
+            [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 4,
+                'end'   => 5,
+            ],
+            $tokens[4]
+        );
+        $this->assertSame(
+            [
+                'value' => '+',
+                'line'  => 1,
+                'type'  => Grammar::T_PLUS,
+                'start' => 5,
+                'end'   => 6,
+            ],
+            $tokens[5]
+        );
+        $this->assertSame(
+            [
+                'value' => '1',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 6,
+                'end'   => 7,
+            ],
+            $tokens[6]
+        );
+        $this->assertSame(
+            [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 7,
+                'end'   => 8,
+            ],
+            $tokens[7]
+        );
+        $this->assertSame(
+            [
+                'value' => '2.0',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 8,
+                'end'   => 11,
+            ],
+            $tokens[8]
+        );
+        $this->assertSame(
+            [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 11,
+                'end'   => 12,
+            ],
+            $tokens[9]
+        );
+        $this->assertSame(
+            [
+                'value' => '-',
+                'line'  => 1,
+                'type'  => Grammar::T_MINUS,
+                'start' => 12,
+                'end'   => 13,
+            ],
+            $tokens[10]
+        );
+        $this->assertSame(
+            [
+                'value' => '2.0',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 13,
+                'end'   => 16,
+            ],
+            $tokens[11]
+        );
+        $this->assertSame(
+            [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 16,
+                'end'   => 17,
+            ],
+            $tokens[12]
+        );
+        $this->assertSame(
+            [
+                'value' => '+',
+                'line'  => 1,
+                'type'  => Grammar::T_PLUS,
+                'start' => 17,
+                'end'   => 18,
+            ],
+            $tokens[13]
+        );
+        $this->assertSame(
+            [
+                'value' => '2.0',
+                'line'  => 1,
+                'type'  => Grammar::T_NUMBER,
+                'start' => 18,
+                'end'   => 21,
+            ],
+            $tokens[14]
+        );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Grammar::T_END,
+                'start' => 21,
+                'end'   => 21,
+            ],
+            $tokens[15]
+        );
+    }
+
+    public function test_T_NUMBER_errornous()
+    {
+        $lexer = new Lexer("01 +00 -00.0", new Grammar());
+        $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
+        $this->assertCount(6, $tokens);
+        $this->assertSame(
+            [
+                'value' => '01',
+                'line'  => 1,
+                'type'  => Grammar::T_STRING,
+                'start' => 0,
+                'end'   => 2,
+            ],
+            $tokens[0]
+        );
+        $this->assertSame(
+            [
+                'value' => '+00',
+                'line'  => 1,
+                'type'  => Grammar::T_STRING,
+                'start' => 3,
+                'end'   => 6,
+            ],
+            $tokens[2]
+        );
+        $this->assertSame(
+            [
+                'value' => '-00.0',
+                'line'  => 1,
+                'type'  => Grammar::T_STRING,
+                'start' => 7,
+                'end'   => 12,
+            ],
+            $tokens[4]
+        );
+    }
 }

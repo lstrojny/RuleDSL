@@ -21,8 +21,27 @@ class Lexer
     {
         $tokens = [];
 
+        $regex = <<<'EOS'
+        /(?:
+            (\s)                        # Single space
+            |
+            ([\-\+])                    # Plus, minus (algebraic signs)
+            (
+                (?:                     # Avoid invalid numbers like 001 (treat as string)
+                    [1-9][0-9]*         # Multi digit number starts always with 1-9
+                    |
+                    0(?=^0)             # Single digit number may start with 0 (but not followed by another 0)
+                )
+                (?:\.\d+)?              # Optional fraction
+            )
+            |
+            ([^\s]+)                    # Everything not seperated by spaces
+            )
+        /x
+EOS;
+
         $flags = PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_OFFSET_CAPTURE;
-        $matches = preg_split('/(\s|[^\s]+)/', $this->string, -1, $flags);
+        $matches = preg_split($regex, $this->string, -1, $flags);
 
         foreach ($matches as $match) {
             $tokens[] = $this->getToken($match);

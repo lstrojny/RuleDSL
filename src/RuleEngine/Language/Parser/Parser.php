@@ -137,18 +137,18 @@ class Parser
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
         $ifStatement->addDecoratingTokens($this->tokenStream->getSkippedTokens());
 
-        return new AST\RuleStatement($ifStatement, $this->genericExpression());
+        return new AST\RuleStatement($ifStatement, $this->expression());
     }
 
-    private function genericExpression()
+    private function expression()
     {
         $this->tokenStream->assert([GrammarInterface::T_BOOLEAN, GrammarInterface::T_STRING]);
 
         if ($this->tokenStream->getCurrentToken('type') === GrammarInterface::T_BOOLEAN) {
-            return new AST\GenericExpression($this->booleanExpression());
+            return $this->booleanExpression();
         }
 
-        return new AST\GenericExpression($this->variableExpression());
+        return $this->variableExpression();
     }
 
     private function variableExpression()

@@ -3,7 +3,7 @@ namespace RuleEngine\Language\AST;
 
 use RuleEngine\Language\AST\Visitor\VisitorInterface;
 
-class VariableExpression extends AbstractNode
+class VariableExpression extends AbstractNode implements ExpressionInterface
 {
     private $tokens;
 

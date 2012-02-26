@@ -9,7 +9,7 @@ class RuleStatement extends AbstractNode
 
     private $expression;
 
-    public function __construct(IfStatement $ifStatement, GenericExpression $expression)
+    public function __construct(IfStatement $ifStatement, ExpressionInterface $expression)
     {
         $this->ifStatement = $ifStatement;
         $this->expression = $expression;

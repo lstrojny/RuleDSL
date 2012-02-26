@@ -103,6 +103,18 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $parser->parse();
     }
 
+    public function testIsExpected_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_IF_T_STRING_T_OF()
+    {
+        $grammar = new Grammar();
+        $lexer = new Lexer('RETURN FALSE IF ANY MATCH IF PROPERTY NAME OF', $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+        $this->setExpectedException(
+            'RuleEngine\Language\Lexer\UnexpectedTokenException',
+            'Expected T_STRING, got "" (T_END) at position 45 - 45, line 1 near "IF PROPERTY NAME OF'
+        );
+        $parser->parse();
+    }
+
     public function testIsExpected_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_MATCH_T_IF_T_BOOLEAN()
     {
         $grammar = new Grammar();
@@ -114,7 +126,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($string, (string) $this->printer);
     }
 
-    public function testIsExpected_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_IF_T_BOOLEAN()
+    public function test_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_IF_T_BOOLEAN()
     {
         $grammar = new Grammar();
         $string = 'RETURN FALSE IF ANY IF FOO';
@@ -125,7 +137,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($string, (string) $this->printer);
     }
 
-    public function testIsExpected_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_RULE_T_MATCH_T_IF_T_BOOLEAN()
+    public function test_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_RULE_T_MATCH_T_IF_T_BOOLEAN()
     {
         $grammar = new Grammar();
         $string = 'RETURN FALSE IF ALL RULES MATCH IF FOO';
@@ -136,7 +148,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($string, (string) $this->printer);
     }
 
-    public function testIsExpected_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_RULE_T_IF_T_BOOLEAN()
+    public function test_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_RULE_T_IF_T_BOOLEAN()
     {
         $grammar = new Grammar();
         $string = 'RETURN FALSE IF ALL RULES IF FOO';
@@ -145,17 +157,5 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $rootNode = $parser->parse();
         $rootNode->accept($this->printer);
         $this->assertSame($string, (string) $this->printer);
-    }
-
-    public function testIsExpected_T_RETURN_T_BOOLEAN_T_IF_T_QUANTIFIER_T_IF_T_STRING_T_OF()
-    {
-        $grammar = new Grammar();
-        $lexer = new Lexer('RETURN FALSE IF ANY MATCH IF PROPERTY NAME OF', $grammar);
-        $parser = new Parser($lexer->scan(), $grammar);
-        $this->setExpectedException(
-            'RuleEngine\Language\Lexer\UnexpectedTokenException',
-            'Expected T_STRING, got "" (T_END) at position 45 - 45, line 1 near "IF PROPERTY NAME OF'
-        );
-        $parser->parse();
     }
 }

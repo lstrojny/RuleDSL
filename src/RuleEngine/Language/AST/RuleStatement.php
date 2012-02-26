@@ -5,19 +5,20 @@ use RuleEngine\Language\AST\Visitor\VisitorInterface;
 
 class RuleStatement extends AbstractNode
 {
+    private $ifStatement;
+
     private $expression;
 
-    public function __construct(array $token, AbstractNode $expression)
+    public function __construct(IfStatement $ifStatement, AbstractNode $expression)
     {
-        parent::__construct($token);
+        $this->ifStatement = $ifStatement;
         $this->expression = $expression;
     }
 
     public function accept(VisitorInterface $visitor)
     {
-        $visitor->visitToken($this->getToken());
-        $this->acceptExtraTokens($visitor);
         $visitor->visitRuleStatement($this);
+        $this->ifStatement->accept($visitor);
         $this->expression->accept($visitor);
     }
 }

@@ -70,7 +70,6 @@ class Parser
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
         $booleanExpression->addExtraTokens($this->tokenStream->getSkippedTokens());
-
         $quantifierStatement = $this->quantifierStatement();
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
@@ -100,7 +99,7 @@ class Parser
     }
 
     /**
-     * quantifierStatement = ifStatement ("ANY" | "ALL") ["MATCH"]
+     * quantifierStatement = ifStatement ("ANY" | "ALL") ["RULE" | "RULES"] ["MATCH"]
      *
      * @return \RuleEngine\Language\AST\QuantifierStatement
      */
@@ -113,9 +112,7 @@ class Parser
         $ifStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
 
         $quantifierToken = $this->tokenStream->assert([GrammarInterface::T_QUANTIFIER]);
-
         $quantifierStatement = new AST\QuantifierStatement($quantifierToken, $ifStatement);
-
 
         if ($this->tokenStream->lookAhead([GrammarInterface::T_RULE], [GrammarInterface::T_WHITESPACE])) {
             $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
@@ -135,12 +132,12 @@ class Parser
     private function ruleStatement()
     {
         $ifToken = $this->tokenStream->assert([GrammarInterface::T_IF]);
+        $ifStatement = new AST\IfStatement($ifToken);
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $ruleStatement = new AST\RuleStatement($ifToken, $this->genericExpression());
-        $ruleStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+        $ifStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
 
-        return $ruleStatement;
+        return new AST\RuleStatement($ifStatement, $this->genericExpression());
     }
 
     private function genericExpression()

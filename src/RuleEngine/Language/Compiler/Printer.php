@@ -50,4 +50,8 @@ class Printer implements VisitorInterface
     public function visitIfStatement(AST\IfStatement $ifStatement)
     {
     }
+
+    public function visitGenericExpression(AST\GenericExpression $genericExpression)
+    {
+    }
 }

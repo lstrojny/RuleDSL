@@ -39,7 +39,6 @@ abstract class AbstractNode implements VisitableInterface
 
     public function accept(VisitorInterface $visitor)
     {
-        var_dump(get_class($this));
         $visitor->visitToken($this->token);
         $this->acceptExtraTokens($visitor);
     }

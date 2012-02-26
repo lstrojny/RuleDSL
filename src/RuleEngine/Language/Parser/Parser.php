@@ -73,9 +73,9 @@ class Parser
 
         $quantifierStatement = $this->quantifierStatement();
 
-
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
         $ruleStatement = $this->ruleStatement();
+        $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
 
         $returnStatement = new AST\ReturnStatement(
             $returnToken,
@@ -120,7 +120,8 @@ class Parser
         /** Find optional T_MATCH token */
         if ($this->tokenStream->lookAhead([GrammarInterface::T_MATCH], [GrammarInterface::T_WHITESPACE])) {
             $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-            $quantifierStatement->addExtraToken($this->tokenStream->getSkippedTokens());
+            $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+            $quantifierStatement->addExtraToken($this->tokenStream->getCurrentToken());
         }
 
         return $quantifierStatement;
@@ -131,8 +132,9 @@ class Parser
         $ifToken = $this->tokenStream->assert([GrammarInterface::T_IF]);
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
-        $ruleStatement = new AST\RuleStatement($this->genericExpression());
-        $ruleStatement->addExtraToken($ifToken);
+        $ruleStatement = new AST\RuleStatement($ifToken, $this->genericExpression());
+        $ruleStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+
         return $ruleStatement;
     }
 
@@ -173,68 +175,11 @@ class Parser
 
     private function propertyExpression()
     {
-        $tokens = $this->tokenStream->captureNext([GrammarInterface::T_WHITESPACE, GrammarInterface::T_STRING], [GrammarInterface::T_OF]);
-        var_dump($tokens);
+        $tokens = $this->tokenStream->captureNext(
+            [GrammarInterface::T_WHITESPACE, GrammarInterface::T_STRING],
+            [GrammarInterface::T_OF]
+        );
+        $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
+        $this->tokenStream->assert([GrammarInterface::T_STRING]);
     }
-
-//    private function captureAhead(array $tokens, array $until = [GrammarInterface::T_END])
-//    {
-//        $position = $this->position;
-//
-//        $captured = [];
-//
-//        while (in_array($this->tokenStream[$position]['type'], array_merge($tokens, $until), true)) {
-//            if ($position >= $this->tokenCount) {
-//                $this->syntaxError($tokens);
-//            }
-//
-//            if (in_array($this->tokenStream[$position]['type'], $until, true)) {
-//                $this->position = $position;
-//                return $captured;
-//            }
-//
-//            $captured[] = $this->tokenStream[$position];
-//
-//            ++$position;
-//        }
-//
-//        $this->syntaxError($tokens);
-//    }
-
-//    private function tryAhead(array $tokens, array $ignore = [GrammarInterface::T_WHITESPACE])
-//    {
-//        $position = $this->position;
-//        $captured = [];
-//
-//        do {
-//            if (++$position >= $this->tokenCount) {
-//                return false;
-//            }
-//
-//            if (in_array($this->tokenStream[$position]['type'], $tokens)) {
-//                $this->position = $position;
-//                return $captured;
-//            }
-//
-//            $captured[] = $this->tokenStream[$position];
-//
-//        } while (in_array($this->tokenStream[$position]['type'], $ignore, true));
-//
-//        return false;
-//    }
-
-
-//    private function nextToken(array &$extraTokens = [], array $ignore = [GrammarInterface::T_WHITESPACE])
-//    {
-//        do {
-//            if (++$this->position >= $this->tokenCount) {
-//                return false;
-//            }
-//            $extraTokens[] = $this->currentToken();
-//        } while (in_array($this->currentToken('type'), $ignore, true));
-//
-//        array_pop($extraTokens);
-//
-//        return true;
-//    }
 }

@@ -14,5 +14,9 @@ class VariableExpression extends AbstractNode
 
     public function accept(VisitorInterface $visitor)
     {
+        foreach ($this->tokens as $token) {
+            $visitor->visitToken($token);
+        }
+        $this->acceptExtraTokens($visitor);
     }
 }

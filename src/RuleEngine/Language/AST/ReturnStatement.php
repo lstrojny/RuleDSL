@@ -27,7 +27,6 @@ class ReturnStatement extends AbstractNode
     public function accept(VisitorInterface $visitor)
     {
         $visitor->visitReturnStatement($this);
-        var_dump($this->getToken());
         $visitor->visitToken($this->getToken());
         $this->acceptExtraTokens($visitor);
 

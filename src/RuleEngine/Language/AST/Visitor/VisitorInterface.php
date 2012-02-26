@@ -12,6 +12,7 @@ interface VisitorInterface
     public function visitIfStatement(AST\IfStatement $ifStatement);
     public function visitRuleStatement(AST\RuleStatement $ruleStatement);
     public function visitVariableExpression(AST\VariableExpression $variableExpression);
+    public function visitGenericExpression(AST\GenericExpression $genericExpression);
     public function visitToken(array $token);
     public function visitExtraToken(array $token);
 }

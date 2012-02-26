@@ -119,10 +119,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $grammar = new Grammar();
         $lexer = new Lexer('RETURN FALSE IF ANY MATCH IF PROPERTY NAME OF', $grammar);
         $parser = new Parser($lexer->scan(), $grammar);
-//        $this->setExpectedException(
-//            'RuleEngine\Language\Lexer\UnexpectedTokenException',
-//            'Expected T_STRING, got "" (T_END) at position 29 - 32, line 1 near "PROPERTY NAME OF'
-//        );
+        $this->setExpectedException(
+            'RuleEngine\Language\Lexer\UnexpectedTokenException',
+            'Expected T_STRING, got "" (T_END) at position 45 - 45, line 1 near "IF PROPERTY NAME OF'
+        );
         $parser->parse();
     }
 }

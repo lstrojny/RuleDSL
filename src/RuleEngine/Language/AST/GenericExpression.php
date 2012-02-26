@@ -1,9 +1,21 @@
 <?php
 namespace RuleEngine\Language\AST;
 
+use RuleEngine\Language\AST\Visitor\VisitorInterface;
+
 class GenericExpression extends AbstractNode
 {
-    public function __construct()
+    private $expression;
+
+    public function __construct(AbstractNode $expression)
     {
+        $this->expression = $expression;
+    }
+
+    public function accept(VisitorInterface $visitor)
+    {
+        $visitor->visitGenericExpression($this);
+        $this->acceptExtraTokens($visitor);
+        $this->expression->accept($visitor);
     }
 }

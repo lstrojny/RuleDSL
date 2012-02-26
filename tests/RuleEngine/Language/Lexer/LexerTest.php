@@ -348,4 +348,52 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             $tokens[3]
         );
     }
+
+    public function test_T_RULE()
+    {
+        $lexer = new Lexer("RULE RULES", new Grammar());
+        $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
+        $this->assertCount(4, $tokens);
+        $this->assertSame(
+            [
+                'value' => 'RULE',
+                'line'  => 1,
+                'type'  => Grammar::T_RULE,
+                'start' => 0,
+                'end'   => 4,
+            ],
+            $tokens[0]
+        );
+        $this->assertSame(
+            [
+                'value' => ' ',
+                'line'  => 1,
+                'type'  => Grammar::T_WHITESPACE,
+                'start' => 4,
+                'end'   => 5,
+            ],
+            $tokens[1]
+        );
+        $this->assertSame(
+            [
+                'value' => 'RULES',
+                'line'  => 1,
+                'type'  => Grammar::T_RULE,
+                'start' => 5,
+                'end'   => 10,
+            ],
+            $tokens[2]
+        );
+        $this->assertSame(
+            [
+                'value' => '',
+                'line'  => 1,
+                'type'  => Grammar::T_END,
+                'start' => 10,
+                'end'   => 10,
+            ],
+            $tokens[3]
+        );
+    }
 }

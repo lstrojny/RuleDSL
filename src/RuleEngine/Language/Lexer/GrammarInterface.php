@@ -13,6 +13,7 @@ interface GrammarInterface
     const T_IF         = 0b000010000100;
     const T_OF         = 0b000100000100;
     const T_IS         = 0b001000000100;
+    const T_RULE       = 0b010000000100;
 
     public function getTokenName($token);
 

@@ -58,6 +58,11 @@ class Grammar implements GrammarInterface
                 $type = self::T_IS;
                 break;
 
+            case 'RULE':
+            case 'RULES':
+                $type = self::T_RULE;
+                break;
+
             case "\n":
                 $type = self::T_WHITESPACE;
                 ++$line;

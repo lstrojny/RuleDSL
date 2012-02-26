@@ -117,7 +117,14 @@ class Parser
 
         $quantifierStatement = new AST\QuantifierStatement($quantifierToken, $ifStatement);
 
-        /** Find optional T_MATCH token */
+
+        if ($this->tokenStream->lookAhead([GrammarInterface::T_RULE], [GrammarInterface::T_WHITESPACE])) {
+            $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
+            $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());
+            $quantifierStatement->addExtraToken($this->tokenStream->getCurrentToken());
+        }
+
+
         if ($this->tokenStream->lookAhead([GrammarInterface::T_MATCH], [GrammarInterface::T_WHITESPACE])) {
             $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
             $quantifierStatement->addExtraTokens($this->tokenStream->getSkippedTokens());

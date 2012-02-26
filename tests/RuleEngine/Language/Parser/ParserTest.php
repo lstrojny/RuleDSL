@@ -158,4 +158,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $rootNode->accept($this->printer);
         $this->assertSame($string, (string) $this->printer);
     }
+
+    public function test_T_RETURN_T_BOOLEAN_T_IF2_T_QUANTIFIER_T_RULE_T_IF_T_BOOLEAN()
+    {
+        $grammar = new Grammar();
+        $string = 'RETURN FALSE WHEN ALL RULES MATCH IF FOO';
+        $lexer = new Lexer($string, $grammar);
+        $parser = new Parser($lexer->scan(), $grammar);
+        $rootNode = $parser->parse();
+        $rootNode->accept($this->printer);
+        $this->assertSame($string, (string) $this->printer);
+    }
 }

@@ -3,52 +3,17 @@ namespace RuleEngine\Language\Lexer;
 
 class LexerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGrammar()
-    {
-        $this->assertFalse(
-            Lexer::T_STRING === (Lexer::T_WHITESPACE & Lexer::T_STRING)
-        );
-    }
-
-    public function specializedStringTokens()
-    {
-        return [
-            [Lexer::T_STRING],
-            [Lexer::T_RETURN],
-            [Lexer::T_BOOLEAN],
-            [Lexer::T_QUANTIFIER],
-            [Lexer::T_MATCH],
-            [Lexer::T_IF],
-            [Lexer::T_OF],
-            [Lexer::T_IS],
-        ];
-    }
-
-    /**
-     * @dataProvider specializedStringTokens
-     */
-    public function testSpecializedStringTokens($token)
-    {
-        $this->assertTrue(
-            Lexer::T_STRING === (Lexer::T_STRING & $token)
-        );
-    }
-
-    public function testGetSymbolName()
-    {
-        $this->assertSame('T_STRING', Lexer::getTokenName(Lexer::T_STRING));
-    }
-
     public function test_T_END()
     {
-        $lexer = new Lexer('');
+        $lexer = new Lexer('', new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(1, $tokens);
         $this->assertSame(
             [
                 'value' => '',
                 'line'  => 1,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 0,
                 'end'   => 0,
             ],
@@ -58,14 +23,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_WHITESPACE_T_END()
     {
-        $lexer = new Lexer(' ');
+        $lexer = new Lexer(' ', new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(2, $tokens);
         $this->assertSame(
             [
                 'value' => ' ',
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 0,
                 'end'   => 1,
             ],
@@ -75,7 +41,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => '',
                 'line'  => 1,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 1,
                 'end'   => 1,
             ],
@@ -85,14 +51,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_BOOLEAN()
     {
-        $lexer = new Lexer("RETURN TRUE\nFALSE");
+        $lexer = new Lexer("RETURN TRUE\nFALSE", new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(6, $tokens);
         $this->assertSame(
             [
                 'value' => 'RETURN',
                 'line'  => 1,
-                'type'  => Lexer::T_RETURN,
+                'type'  => Grammar::T_RETURN,
                 'start' => 0,
                 'end'   => 6,
             ],
@@ -102,7 +69,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => ' ',
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 6,
                 'end'   => 7,
             ],
@@ -112,7 +79,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'TRUE',
                 'line'  => 1,
-                'type'  => Lexer::T_BOOLEAN,
+                'type'  => Grammar::T_BOOLEAN,
                 'start' => 7,
                 'end'   => 11,
             ],
@@ -122,7 +89,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             array(
                 'value' => "\n",
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 11,
                 'end'   => 12,
             ),
@@ -132,7 +99,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'FALSE',
                 'line'  => 2,
-                'type'  => Lexer::T_BOOLEAN,
+                'type'  => Grammar::T_BOOLEAN,
                 'start' => 12,
                 'end'   => 17,
             ],
@@ -142,7 +109,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => '',
                 'line'  => 2,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 17,
                 'end'   => 17,
             ],
@@ -152,14 +119,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_QUANTIFIER_T_MATCH()
     {
-        $lexer = new Lexer("ANY\nALL\nMATCH");
+        $lexer = new Lexer("ANY\nALL\nMATCH", new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(6, $tokens);
         $this->assertSame(
             [
                 'value' => 'ANY',
                 'line'  => 1,
-                'type'  => Lexer::T_QUANTIFIER,
+                'type'  => Grammar::T_QUANTIFIER,
                 'start' => 0,
                 'end'   => 3,
             ],
@@ -169,7 +137,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => "\n",
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 3,
                 'end'   => 4,
             ],
@@ -179,7 +147,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'ALL',
                 'line'  => 2,
-                'type'  => Lexer::T_QUANTIFIER,
+                'type'  => Grammar::T_QUANTIFIER,
                 'start' => 4,
                 'end'   => 7,
             ],
@@ -189,7 +157,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => "\n",
                 'line'  => 2,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 7,
                 'end'   => 8,
             ],
@@ -199,7 +167,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             array(
                 'value' => 'MATCH',
                 'line'  => 3,
-                'type'  => Lexer::T_MATCH,
+                'type'  => Grammar::T_MATCH,
                 'start' => 8,
                 'end'   => 13,
             ),
@@ -209,7 +177,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             array(
                 'value' => '',
                 'line'  => 3,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 13,
                 'end'   => 13,
             ),
@@ -219,14 +187,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_IF()
     {
-        $lexer = new Lexer("IF WHEN");
+        $lexer = new Lexer("IF WHEN", new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(4, $tokens);
         $this->assertSame(
             [
                 'value' => 'IF',
                 'line'  => 1,
-                'type'  => Lexer::T_IF,
+                'type'  => Grammar::T_IF,
                 'start' => 0,
                 'end'   => 2,
             ],
@@ -236,7 +205,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => ' ',
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 2,
                 'end'   => 3,
             ],
@@ -246,7 +215,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'WHEN',
                 'line'  => 1,
-                'type'  => Lexer::T_IF,
+                'type'  => Grammar::T_IF,
                 'start' => 3,
                 'end'   => 7,
             ],
@@ -256,7 +225,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => '',
                 'line'  => 1,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 7,
                 'end'   => 7,
             ],
@@ -266,14 +235,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_OF()
     {
-        $lexer = new Lexer('PROPERTY_NAME OF OBJECT_NAME');
+        $lexer = new Lexer('PROPERTY_NAME OF OBJECT_NAME', new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(6, $tokens);
         $this->assertSame(
             [
                 'value' => 'PROPERTY_NAME',
                 'line'  => 1,
-                'type'  => Lexer::T_STRING,
+                'type'  => Grammar::T_STRING,
                 'start' => 0,
                 'end'   => 13,
             ],
@@ -283,7 +253,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => ' ',
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 13,
                 'end'   => 14,
             ],
@@ -293,7 +263,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'OF',
                 'line'  => 1,
-                'type'  => Lexer::T_OF,
+                'type'  => Grammar::T_OF,
                 'start' => 14,
                 'end'   => 16,
             ],
@@ -303,7 +273,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => ' ',
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 16,
                 'end'   => 17,
             ],
@@ -313,7 +283,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'OBJECT_NAME',
                 'line'  => 1,
-                'type'  => Lexer::T_STRING,
+                'type'  => Grammar::T_STRING,
                 'start' => 17,
                 'end'   => 28,
             ],
@@ -323,7 +293,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => '',
                 'line'  => 1,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 28,
                 'end'   => 28,
             ],
@@ -333,14 +303,15 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function test_T_IS()
     {
-        $lexer = new Lexer("IS SOMETHING");
+        $lexer = new Lexer("IS SOMETHING", new Grammar());
         $tokens = $lexer->scan();
+        $tokens = $tokens->toArray();
         $this->assertCount(4, $tokens);
         $this->assertSame(
             [
                 'value' => 'IS',
                 'line'  => 1,
-                'type'  => Lexer::T_IS,
+                'type'  => Grammar::T_IS,
                 'start' => 0,
                 'end'   => 2,
             ],
@@ -350,7 +321,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => ' ',
                 'line'  => 1,
-                'type'  => Lexer::T_WHITESPACE,
+                'type'  => Grammar::T_WHITESPACE,
                 'start' => 2,
                 'end'   => 3,
             ],
@@ -360,7 +331,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => 'SOMETHING',
                 'line'  => 1,
-                'type'  => Lexer::T_STRING,
+                'type'  => Grammar::T_STRING,
                 'start' => 3,
                 'end'   => 12,
             ],
@@ -370,7 +341,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             [
                 'value' => '',
                 'line'  => 1,
-                'type'  => Lexer::T_END,
+                'type'  => Grammar::T_END,
                 'start' => 12,
                 'end'   => 12,
             ],

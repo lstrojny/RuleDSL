@@ -3,10 +3,18 @@ namespace RuleEngine\Language\AST\Visitor;
 
 use RuleEngine\Language\Lexer\Lexer;
 use RuleEngine\Language\AST;
+use RuleEngine\Language\Lexer\Grammar;
 
 class TestVisitor implements VisitorInterface
 {
     private $visits = [];
+
+    private $grammar;
+
+    public function __construct(Grammar $grammar)
+    {
+        $this->grammar = $grammar;
+    }
 
     public function visitBooleanExpression(AST\BooleanExpression $booleanExpression)
     {
@@ -64,7 +72,7 @@ class TestVisitor implements VisitorInterface
             $name = get_class($client);
             $name = substr($name, strrpos($name, '\\') + 1);
         } elseif (is_array($client)) {
-            $name = [$client['value'], Lexer::getTokenName($client['type'])];
+            $name = [$client['value'], $this->grammar->getTokenName($client['type'])];
         }
         $this->visits[] = [$methodName, $name];
     }
@@ -74,8 +82,9 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->visitor = new TestVisitor();
-        $this->lexer = new Lexer('');
+        $grammar = new Grammar();
+        $this->visitor = new TestVisitor($grammar);
+        $this->lexer = new Lexer('', $grammar);
     }
 
     public function testVisitBooleanExpression()

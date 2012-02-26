@@ -1,10 +1,9 @@
 <?php
-namespace RuleEngine\Language\Parser;
+namespace RuleEngine\Language\Lexer;
 
 use RuntimeException;
-use RuleEngine\Language\Lexer\Lexer;
 
-class InvalidSyntaxException extends RuntimeException
+class UnexpectedTokenException extends RuntimeException
 {
     public function __construct($expectedToken, $currentValue, $currentType, $line, $start, $end, $near)
     {

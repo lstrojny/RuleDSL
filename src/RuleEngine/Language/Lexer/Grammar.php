@@ -9,8 +9,7 @@ class Grammar implements GrammarInterface
 
     public function __construct()
     {
-        $class = new ReflectionObject($this);
-        foreach ($class->getConstants() as $name => $token) {
+        foreach ((new ReflectionObject($this))->getConstants() as $name => $token) {
             $this->valueTable[$token] = $name;
         }
     }

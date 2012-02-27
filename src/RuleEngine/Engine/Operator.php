@@ -21,8 +21,7 @@ class Operator
 
     public function __construct($type)
     {
-        $class = new ReflectionObject($this);
-        if (!in_array($type, $class->getConstants(), true)) {
+        if (!in_array($type, (new ReflectionObject($this))->getConstants(), true)) {
             throw new InvalidArgumentException('Invalid operator "' . $type . '"');
         }
 

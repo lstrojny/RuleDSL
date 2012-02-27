@@ -236,7 +236,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             'RuleEngine\Language\Lexer\UnexpectedTokenException',
             'Expected T_NUMBER, got "WHEN" (T_IF) at position 9 - 13, line 1 near "RETURN + WHEN ALL RULES MATCH"'
         );
-        $rootNode = $parser->parse();
+        $parser->parse();
     }
 
     public function testIsExpected_T_RETURN_T_MINUS_T_IF_T_QUANTIFIER_T_IF_T_VARIABLE()
@@ -250,6 +250,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             'RuleEngine\Language\Lexer\UnexpectedTokenException',
             'Expected T_NUMBER, got "WHEN" (T_IF) at position 9 - 13, line 1 near "RETURN - WHEN ALL RULES MATCH"'
         );
-        $rootNode = $parser->parse();
+        $parser->parse();
     }
 }

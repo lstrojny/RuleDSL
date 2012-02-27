@@ -1,24 +1,24 @@
 <?php
 namespace RuleEngine\Engine;
 
-use RuleEngine\Engine\Value\BooleanValue;
-use RuleEngine\Engine\Value\IntegerValue;
+use RuleEngine\Engine\RuleContext;
 
 class PropositionTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->context = $this->getMockBuilder('RuleEngine\Engine\RuleContext')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $this->context = new RuleContext([
+            'string'  => 'STRING',
+            'integer' => 100,
+        ]);
     }
 
     public function testSimpleBooleanProposition_TRUE_1()
     {
         $proposition = new Proposition(
-            new BooleanValue('TRUE'),
+            new Value\BooleanValue('TRUE'),
             new Operator(Operator::EQUAL),
-            new BooleanValue('TRUE')
+            new Value\BooleanValue('TRUE')
         );
         $this->assertTrue($proposition->evaluate($this->context));
     }
@@ -26,9 +26,9 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
     public function testSimpleBooleanProposition_FALSE_1()
     {
         $proposition = new Proposition(
-            new BooleanValue('FALSE'),
+            new Value\BooleanValue('FALSE'),
             new Operator(Operator::EQUAL),
-            new BooleanValue('TRUE')
+            new Value\BooleanValue('TRUE')
         );
         $this->assertFalse($proposition->evaluate($this->context));
     }
@@ -36,9 +36,9 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
     public function testSimpleBooleanProposition_FALSE_2()
     {
         $proposition = new Proposition(
-            new BooleanValue('TRUE'),
+            new Value\BooleanValue('TRUE'),
             new Operator(Operator::EQUAL),
-            new BooleanValue('FALSE')
+            new Value\BooleanValue('FALSE')
         );
         $this->assertFalse($proposition->evaluate($this->context));
     }
@@ -46,9 +46,9 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
     public function testSimpleIntegerProposition_TRUE_1()
     {
         $proposition = new Proposition(
-            new IntegerValue(100),
+            new Value\IntegerValue(100),
             new Operator(Operator::EQUAL),
-            new IntegerValue(100)
+            new Value\IntegerValue(100)
         );
         $this->assertTrue($proposition->evaluate($this->context));
     }
@@ -56,9 +56,19 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
     public function testSimpleIntegerProposition_TRUE_2()
     {
         $proposition = new Proposition(
-            new IntegerValue(100),
+            new Value\IntegerValue(100),
             new Operator(Operator::LESS),
-            new IntegerValue(101)
+            new Value\IntegerValue(101)
+        );
+        $this->assertTrue($proposition->evaluate($this->context));
+    }
+
+    public function testVariableIntegerProposition_TRUE_1()
+    {
+        $proposition = new Proposition(
+            new Value\Variable('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(101)
         );
         $this->assertTrue($proposition->evaluate($this->context));
     }

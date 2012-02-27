@@ -20,28 +20,28 @@ class VariableTest extends \PHPUnit_Framework_TestCase
     {
         $value = (new Variable('str'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\StringValue', $value);
-        $this->assertSame('STRING', $value->getValue($this->context));
+        $this->assertSame('STRING', $value->getPrimitive());
     }
 
     public function testAccessingIntegerVariable()
     {
         $value = (new Variable('positiveInteger'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\IntegerValue', $value);
-        $this->assertSame(100, $value->getValue($this->context));
+        $this->assertSame(100, $value->getPrimitive());
 
         $value = (new Variable('negativeInteger'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\IntegerValue', $value);
-        $this->assertSame(-100, $value->getValue($this->context));
+        $this->assertSame(-100, $value->getPrimitive());
     }
 
     public function testAccessingBooleanVariable()
     {
         $value = (new Variable('booleanFalse'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\BooleanValue', $value);
-        $this->assertSame('FALSE', $value->getValue($this->context));
+        $this->assertSame('FALSE', $value->getPrimitive());
 
         $value = (new Variable('booleanTrue'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\BooleanValue', $value);
-        $this->assertSame('TRUE', $value->getValue($this->context));
+        $this->assertSame('TRUE', $value->getPrimitive());
     }
 }

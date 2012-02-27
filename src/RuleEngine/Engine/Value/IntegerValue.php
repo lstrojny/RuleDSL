@@ -21,15 +21,15 @@ class IntegerValue extends AbstractValue
         return 'integer';
     }
 
-    public function equals(AbstractValue $value, RuleContext $context)
+    public function equals(AbstractValue $value)
     {
         $this->assertType($value);
-        return $this->getValue($context) === $value->getValue($context);
+        return $this->getPrimitive() === $value->getPrimitive();
     }
 
-    public function lessThan(AbstractValue $value, RuleContext $context)
+    public function lessThan(AbstractValue $value)
     {
         $this->assertType($value);
-        return $this->getValue($context) < $value->getValue($context);
+        return $this->getPrimitive() < $value->getPrimitive();
     }
 }

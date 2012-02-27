@@ -20,9 +20,9 @@ class BooleanValue extends AbstractValue
         return 'boolean';
     }
 
-    public function equals(AbstractValue $value, RuleContext $context)
+    public function equals(AbstractValue $value)
     {
         $this->assertType($value);
-        return $value->getValue($context) === $this->getValue($context);
+        return $value->getPrimitive() === $this->getPrimitive();
     }
 }

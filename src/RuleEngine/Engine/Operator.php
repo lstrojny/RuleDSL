@@ -29,14 +29,14 @@ class Operator
         $this->type = $type;
     }
 
-    public function evaluate(AbstractValue $left, AbstractValue $right, RuleContext $context)
+    public function evaluate(AbstractValue $left, AbstractValue $right)
     {
         switch ($this->type) {
-            case static::EQUAL:            return $left->equals($right, $context);
-            case static::GREATER:          return $left->greaterThan($right, $context);
-            case static::GREATER_OR_EQUAL: return $left->greaterThanOrEquals($right, $context);
-            case static::LESS:             return $left->lessThan($right, $context);
-            case static::LESS_OR_EQUAL:    return $left->lessThanOrEquals($right, $context);
+            case static::EQUAL:            return $left->equals($right);
+            case static::GREATER:          return $left->greaterThan($right);
+            case static::GREATER_OR_EQUAL: return $left->greaterThanOrEquals($right);
+            case static::LESS:             return $left->lessThan($right);
+            case static::LESS_OR_EQUAL:    return $left->lessThanOrEquals($right);
         }
     }
 }

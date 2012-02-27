@@ -1,8 +1,6 @@
 <?php
 namespace RuleEngine\Engine;
 
-use RuleEngine\Engine\Value\AbstractValue;
-
 class Proposition
 {
     private $left;
@@ -11,7 +9,7 @@ class Proposition
 
     private $operator;
 
-    public function __construct(AbstractValue $left, Operator $operator, AbstractValue $right)
+    public function __construct(Value\ValueInterface $left, Operator $operator, Value\ValueInterface $right)
     {
         $this->left = $left;
         $this->right = $right;
@@ -20,6 +18,18 @@ class Proposition
 
     public function evaluate(RuleContext $context)
     {
-        return $this->operator->evaluate($this->left, $this->right, $context);
+        return $this->operator->evaluate(
+            $this->determineValue($this->left, $context),
+            $this->determineValue($this->right, $context)
+        );
+    }
+
+    private function determineValue(Value\ValueInterface $value, RuleContext $context)
+    {
+        while (!$value instanceof Value\DeterminedValueInterface) {
+            $value = $value->getValue($context);
+        }
+
+        return $value;
     }
 }

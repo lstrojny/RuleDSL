@@ -7,7 +7,7 @@ use RuleEngine\Engine\Value\IntegerValue;
 use RuleEngine\Engine\Value\BooleanValue;
 use RuntimeException;
 
-class Variable extends AbstractValue
+class Variable implements ValueInterface
 {
     public function __construct($variableName)
     {
@@ -30,10 +30,5 @@ class Variable extends AbstractValue
     public function getName()
     {
         return 'variable: ' . $this->variableName;
-    }
-
-    public function equals(AbstractValue $value, RuleContext $context)
-    {
-        return $this->getValue($context)->equals($value, $context);
     }
 }

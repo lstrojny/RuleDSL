@@ -1,7 +1,7 @@
 <?php
 namespace RuleEngine\Engine\Value;
 
-interface DeterminedValueInterface extends ValueInterface
+interface FixedValueInterface extends ValueInterface
 {
     public function getPrimitive();
 

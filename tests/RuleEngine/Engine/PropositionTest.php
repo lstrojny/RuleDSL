@@ -1,13 +1,13 @@
 <?php
 namespace RuleEngine\Engine;
 
-use RuleEngine\Engine\RuleContext;
+use RuleEngine\Engine\Context\SimpleContext;
 
 class PropositionTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->context = new RuleContext([
+        $this->context = new SimpleContext([
             'string'  => 'STRING',
             'integer' => 100,
         ]);
@@ -66,7 +66,7 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
     public function testVariableIntegerProposition_TRUE_1()
     {
         $proposition = new Proposition(
-            new Value\Variable('integer'),
+            new Value\VariableValue('integer'),
             new Operator(Operator::LESS),
             new Value\IntegerValue(101)
         );

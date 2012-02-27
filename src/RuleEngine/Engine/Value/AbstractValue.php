@@ -3,16 +3,16 @@ namespace RuleEngine\Engine\Value;
 
 use InvalidArgumentException;
 use BadMethodCallException;
-use RuleEngine\Engine\RuleContext;
+use RuleEngine\Engine\Context\ContextInterface;
 
-abstract class AbstractValue implements DeterminedValueInterface
+abstract class AbstractValue implements FixedValueInterface
 {
     public function __construct($value)
     {
         $this->value = $value;
     }
 
-    public function getValue(RuleContext $context)
+    public function getValue(ContextInterface $context)
     {
         return $this;
     }

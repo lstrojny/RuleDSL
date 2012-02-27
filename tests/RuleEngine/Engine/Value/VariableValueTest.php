@@ -1,13 +1,13 @@
 <?php
 namespace RuleEngine\Engine\Value;
 
-use RuleEngine\Engine\RuleContext;
+use RuleEngine\Engine\Context\SimpleContext;
 
-class VariableTest extends \PHPUnit_Framework_TestCase
+class VariableValueTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->context = new RuleContext([
+        $this->context = new SimpleContext([
             'str'             => 'STRING',
             'positiveInteger' => 100,
             'negativeInteger' => -100,
@@ -18,30 +18,36 @@ class VariableTest extends \PHPUnit_Framework_TestCase
 
     public function testAccessingStringVariable()
     {
-        $value = (new Variable('str'))->getValue($this->context);
+        $value = (new VariableValue('str'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\StringValue', $value);
         $this->assertSame('STRING', $value->getPrimitive());
     }
 
     public function testAccessingIntegerVariable()
     {
-        $value = (new Variable('positiveInteger'))->getValue($this->context);
+        $value = (new VariableValue('positiveInteger'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\IntegerValue', $value);
         $this->assertSame(100, $value->getPrimitive());
 
-        $value = (new Variable('negativeInteger'))->getValue($this->context);
+        $value = (new VariableValue('negativeInteger'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\IntegerValue', $value);
         $this->assertSame(-100, $value->getPrimitive());
     }
 
     public function testAccessingBooleanVariable()
     {
-        $value = (new Variable('booleanFalse'))->getValue($this->context);
+        $value = (new VariableValue('booleanFalse'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\BooleanValue', $value);
         $this->assertSame('FALSE', $value->getPrimitive());
 
-        $value = (new Variable('booleanTrue'))->getValue($this->context);
+        $value = (new VariableValue('booleanTrue'))->getValue($this->context);
         $this->assertInstanceOf('RuleEngine\Engine\Value\BooleanValue', $value);
         $this->assertSame('TRUE', $value->getPrimitive());
+    }
+
+    public function testAccessingInexistingVariable()
+    {
+        $this->setExpectedException('OutOfBoundsException', 'Invalid variable "invalidVariable"');
+        (new VariableValue('invalidVariable'))->getValue($this->context);
     }
 }

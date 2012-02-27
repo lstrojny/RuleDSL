@@ -1,20 +1,17 @@
 <?php
 namespace RuleEngine\Engine\Value;
 
-use RuleEngine\Engine\RuleContext;
-use RuleEngine\Engine\Value\StringValue;
-use RuleEngine\Engine\Value\IntegerValue;
-use RuleEngine\Engine\Value\BooleanValue;
+use RuleEngine\Engine\Context\ContextInterface;
 use RuntimeException;
 
-class Variable implements ValueInterface
+class VariableValue implements ValueInterface
 {
     public function __construct($variableName)
     {
         $this->variableName = $variableName;
     }
 
-    public function getValue(RuleContext $context)
+    public function getValue(ContextInterface $context)
     {
         $value = $context->lookup($this->variableName);
         $type = gettype($value);

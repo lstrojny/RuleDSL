@@ -16,7 +16,7 @@ class Proposition
         $this->operator = $operator;
     }
 
-    public function evaluate(RuleContext $context)
+    public function evaluate(Context\ContextInterface $context)
     {
         return $this->operator->evaluate(
             $this->determineValue($this->left, $context),
@@ -24,9 +24,9 @@ class Proposition
         );
     }
 
-    private function determineValue(Value\ValueInterface $value, RuleContext $context)
+    private function determineValue(Value\ValueInterface $value, Context\ContextInterface $context)
     {
-        while (!$value instanceof Value\DeterminedValueInterface) {
+        while (!$value instanceof Value\FixedValueInterface) {
             $value = $value->getValue($context);
         }
 

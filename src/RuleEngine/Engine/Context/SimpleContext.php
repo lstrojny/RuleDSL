@@ -20,6 +20,14 @@ class SimpleContext implements ContextInterface
             );
         }
 
+        if (is_array($this->scope[$variableName])) {
+            return new static($this->scope[$variableName]);
+        }
+
+        if (is_object($this->scope[$variableName])) {
+            return new static(get_object_vars($this->scope[$variableName]));
+        }
+
         return $this->scope[$variableName];
     }
 }

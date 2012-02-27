@@ -13,6 +13,8 @@ class VariableValueTest extends \PHPUnit_Framework_TestCase
             'negativeInteger' => -100,
             'booleanTrue'     => true,
             'booleanFalse'    => false,
+            'nested'          => ['string' => 'NESTED', true],
+            'object'          => (object)['property' => 'PROPERTY VALUE'],
         ]);
     }
 
@@ -49,5 +51,23 @@ class VariableValueTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('OutOfBoundsException', 'Invalid variable "invalidVariable"');
         (new VariableValue('invalidVariable'))->getValue($this->context);
+    }
+
+    public function testAccessingArray()
+    {
+        $value = (new VariableValue('nested', 'string'))->getValue($this->context);
+        $this->assertInstanceOf('RuleEngine\Engine\Value\StringValue', $value);
+        $this->assertSame('NESTED', $value->getPrimitive());
+
+        $value = (new VariableValue('nested', 0))->getValue($this->context);
+        $this->assertInstanceOf('RuleEngine\Engine\Value\BooleanValue', $value);
+        $this->assertSame('TRUE', $value->getPrimitive());
+    }
+
+    public function testAccessingObject()
+    {
+        $value = (new VariableValue('object', 'property'))->getValue($this->context);
+        $this->assertInstanceOf('RuleEngine\Engine\Value\StringValue', $value);
+        $this->assertSame('PROPERTY VALUE', $value->getPrimitive());
     }
 }

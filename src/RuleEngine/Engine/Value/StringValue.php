@@ -3,6 +3,7 @@ namespace RuleEngine\Engine\Value;
 
 use InvalidArgumentException;
 use BadMethodCallException;
+use RuleEngine\Engine\RuleContext;
 
 class StringValue extends AbstractValue
 {
@@ -21,9 +22,9 @@ class StringValue extends AbstractValue
         return 'string';
     }
 
-    public function equals(AbstractValue $value)
+    public function equals(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $value->getValue() === $this->getValue();
+        return $value->getValue($context) === $this->getValue($context);
     }
 }

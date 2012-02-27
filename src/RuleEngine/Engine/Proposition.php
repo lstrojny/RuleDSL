@@ -20,6 +20,6 @@ class Proposition
 
     public function evaluate(RuleContext $context)
     {
-        return $this->operator->evaluate($this->left, $this->right);
+        return $this->operator->evaluate($this->left, $this->right, $context);
     }
 }

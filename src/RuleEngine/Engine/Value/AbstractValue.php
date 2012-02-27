@@ -3,6 +3,7 @@ namespace RuleEngine\Engine\Value;
 
 use InvalidArgumentException;
 use BadMethodCallException;
+use RuleEngine\Engine\RuleContext;
 
 abstract class AbstractValue
 {
@@ -11,21 +12,21 @@ abstract class AbstractValue
         $this->value = $value;
     }
 
-    public function getValue()
+    public function getValue(RuleContext $context)
     {
         return $this->value;
     }
 
     abstract public function getName();
 
-    abstract public function equals(AbstractValue $value);
+    abstract public function equals(AbstractValue $value, RuleContext $context);
 
-    public function notEquals(AbstractValue $value)
+    public function notEquals(AbstractValue $value, RuleContext $context)
     {
-        return !$this->equals($value);
+        return !$this->equals($value, $context);
     }
 
-    public function lessThan(AbstractValue $value)
+    public function lessThan(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
         throw new BadMethodCallException(
@@ -33,22 +34,22 @@ abstract class AbstractValue
         );
     }
 
-    public function lessThanOrEquals(AbstractValue $value)
+    public function lessThanOrEquals(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $this->lessThan($value) || $this->equals($value);
+        return $this->lessThan($value, $context) || $this->equals($value, $context);
     }
 
-    public function greaterThan(AbstractValue $value)
+    public function greaterThan(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $value->lessThan($this);
+        return $value->lessThan($this, $context);
     }
 
-    public function greaterThanOrEquals(AbstractValue $value)
+    public function greaterThanOrEquals(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $value->lessThan($this) || $this->equals($value);
+        return $value->lessThan($this, $context) || $this->equals($value, $context);
     }
 
     protected function assertType(AbstractValue $value)

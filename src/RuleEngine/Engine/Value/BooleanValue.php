@@ -3,6 +3,7 @@ namespace RuleEngine\Engine\Value;
 
 use InvalidArgumentException;
 use BadMethodCallException;
+use RuleEngine\Engine\RuleContext;
 
 class BooleanValue extends AbstractValue
 {
@@ -19,9 +20,9 @@ class BooleanValue extends AbstractValue
         return 'boolean';
     }
 
-    public function equals(AbstractValue $value)
+    public function equals(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $value->getValue() === $this->getValue();
+        return $value->getValue($context) === $this->getValue($context);
     }
 }

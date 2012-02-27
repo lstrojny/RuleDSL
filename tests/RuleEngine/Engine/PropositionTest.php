@@ -8,7 +8,9 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->context = new RuleContext();
+        $this->context = $this->getMockBuilder('RuleEngine\Engine\RuleContext')
+                              ->disableOriginalConstructor()
+                              ->getMock();
     }
 
     public function testSimpleBooleanProposition_TRUE_1()

@@ -4,6 +4,7 @@ namespace RuleEngine\Engine;
 use InvalidArgumentException;
 use ReflectionObject;
 use RuleEngine\Engine\Value\AbstractValue;
+use RuleEngine\Engine\RuleContext;
 
 class Operator
 {
@@ -28,14 +29,14 @@ class Operator
         $this->type = $type;
     }
 
-    public function evaluate(AbstractValue $left, AbstractValue $right)
+    public function evaluate(AbstractValue $left, AbstractValue $right, RuleContext $context)
     {
         switch ($this->type) {
-            case static::EQUAL:            return $left->equals($right);
-            case static::GREATER:          return $left->greaterThan($right);
-            case static::GREATER_OR_EQUAL: return $left->greaterThanOrEquals($right);
-            case static::LESS:             return $left->lessThan($right);
-            case static::LESS_OR_EQUAL:    return $left->lessThanOrEquals($right);
+            case static::EQUAL:            return $left->equals($right, $context);
+            case static::GREATER:          return $left->greaterThan($right, $context);
+            case static::GREATER_OR_EQUAL: return $left->greaterThanOrEquals($right, $context);
+            case static::LESS:             return $left->lessThan($right, $context);
+            case static::LESS_OR_EQUAL:    return $left->lessThanOrEquals($right, $context);
         }
     }
 }

@@ -2,6 +2,7 @@
 namespace RuleEngine\Engine\Value;
 
 use InvalidArgumentException;
+use RuleEngine\Engine\RuleContext;
 
 class IntegerValue extends AbstractValue
 {
@@ -20,15 +21,15 @@ class IntegerValue extends AbstractValue
         return 'integer';
     }
 
-    public function equals(AbstractValue $value)
+    public function equals(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $this->getValue() === $value->getValue();
+        return $this->getValue($context) === $value->getValue($context);
     }
 
-    public function lessThan(AbstractValue $value)
+    public function lessThan(AbstractValue $value, RuleContext $context)
     {
         $this->assertType($value);
-        return $this->getValue() < $value->getValue();
+        return $this->getValue($context) < $value->getValue($context);
     }
 }

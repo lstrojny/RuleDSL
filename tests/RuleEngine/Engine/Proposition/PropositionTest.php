@@ -1,6 +1,8 @@
 <?php
-namespace RuleEngine\Engine;
+namespace RuleEngine\Engine\Proposition;
 
+use RuleEngine\Engine\Value;
+use RuleEngine\Engine\Operator;
 use RuleEngine\Engine\Context\SimpleContext;
 
 class PropositionTest extends \PHPUnit_Framework_TestCase
@@ -79,11 +81,11 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\VariableValue('integer'),
             new Operator(Operator::LESS),
             new Value\IntegerValue(101)
-        ))->logicalAnd((new Proposition(
+        ))->and((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('NOT TEST')
-        )))->logicalOr((new Proposition(
+        )))->or((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('TEST')
@@ -98,15 +100,15 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\VariableValue('integer'),
             new Operator(Operator::LESS),
             new Value\IntegerValue(101)
-        ))->logicalAnd((new Proposition(
+        ))->and((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('NOT TEST')
-        )))->logicalOr((new Proposition(
+        )))->or((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('TEST')
-        )))->logicalAnd((new Proposition(
+        )))->and((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('TEST')
@@ -121,15 +123,15 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\VariableValue('integer'),
             new Operator(Operator::LESS),
             new Value\IntegerValue(100)
-        ))->logicalAnd((new Proposition(
+        ))->and((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('NOT TEST')
-        )))->logicalOr((new Proposition(
+        )))->or((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('NOT TEST')
-        )))->logicalAnd((new Proposition(
+        )))->and((new Proposition(
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('TEST')
@@ -144,7 +146,7 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\StringValue('TEST'),
             new Operator(Operator::EQUAL),
             new Value\StringValue('TEST')
-        ))->logicalAnd((new Proposition(
+        ))->and((new Proposition(
             new Value\VariableValue('integer'),
             new Operator(Operator::EQUAL),
             new Value\IntegerValue(100)
@@ -154,7 +156,7 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\VariableValue('integer'),
             new Operator(Operator::LESS),
             new Value\IntegerValue(100)
-        ))->logicalOr($group);
+        ))->or($group);
 
         $this->assertTrue(100 < 100 || ('TEST' === 'TEST' && 100 === 100));
         $this->assertTrue($proposition->evaluate($this->context));
@@ -166,12 +168,27 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\VariableValue('integer'),
             new Operator(Operator::LESS),
             new Value\IntegerValue(101)
-        ))->logicalXor(new Proposition(
+        ))->xor(new Proposition(
             new Value\VariableValue('integer'),
             new Operator(Operator::EQUAL),
             new Value\IntegerValue(100)
         ));
         $this->assertFalse(100 < 101 xor 100 === 100);
+        $this->assertFalse($proposition->evaluate($this->context));
+    }
+
+    public function testNegateProposition()
+    {
+        $proposition = (new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(101)
+        ))->and()->not(new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::EQUAL),
+            new Value\IntegerValue(100)
+        ));
+        $this->assertFalse(100 < 101 && !(100 === 100));
         $this->assertFalse($proposition->evaluate($this->context));
     }
 }

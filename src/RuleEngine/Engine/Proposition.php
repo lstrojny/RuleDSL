@@ -44,6 +44,16 @@ class Proposition
         return $this;
     }
 
+    public function logicalXor(Proposition $next)
+    {
+        $previous = $this->evaluationChain;
+        $this->evaluationChain = function(Context\ContextInterface $context) use ($previous, $next) {
+            return $previous($context) xor $next->evaluate($context);
+        };
+
+        return $this;
+    }
+
     public function evaluate(Context\ContextInterface $context)
     {
         $chain = $this->evaluationChain;

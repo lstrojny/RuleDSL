@@ -156,6 +156,22 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
             new Value\IntegerValue(100)
         ))->logicalOr($group);
 
+        $this->assertTrue(100 < 100 || ('TEST' === 'TEST' && 100 === 100));
         $this->assertTrue($proposition->evaluate($this->context));
+    }
+
+    public function testXorProposition()
+    {
+        $proposition = (new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(101)
+        ))->logicalXor(new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::EQUAL),
+            new Value\IntegerValue(100)
+        ));
+        $this->assertFalse(100 < 101 xor 100 === 100);
+        $this->assertFalse($proposition->evaluate($this->context));
     }
 }

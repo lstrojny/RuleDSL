@@ -72,4 +72,90 @@ class PropositionTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertTrue($proposition->evaluate($this->context));
     }
+
+    public function testPropositionAndOr()
+    {
+        $proposition = (new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(101)
+        ))->logicalAnd((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('NOT TEST')
+        )))->logicalOr((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('TEST')
+        )));
+        $this->assertTrue(100 < 101 && 'TEST' === 'NOT TEST' || 'TEST' === 'TEST');
+        $this->assertTrue($proposition->evaluate($this->context));
+    }
+
+    public function testPropositionAndOrAnd()
+    {
+        $proposition = (new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(101)
+        ))->logicalAnd((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('NOT TEST')
+        )))->logicalOr((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('TEST')
+        )))->logicalAnd((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('TEST')
+        )));
+        $this->assertTrue(100 < 101 && 'TEST' === 'NOT TEST' || 'TEST' === 'TEST' && 'TEST' === 'TEST');
+        $this->assertTrue($proposition->evaluate($this->context));
+    }
+
+    public function testPropositionAndOrAnd_fail()
+    {
+        $proposition = (new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(100)
+        ))->logicalAnd((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('NOT TEST')
+        )))->logicalOr((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('NOT TEST')
+        )))->logicalAnd((new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('TEST')
+        )));
+        $this->assertFalse(100 < 100 && 'TEST' === 'NOT TEST' || 'TEST' === 'NOT TEST' && 'TEST' === 'TEST');
+        $this->assertFalse($proposition->evaluate($this->context));
+    }
+
+    public function testGroupedPropositions()
+    {
+        $group = (new Proposition(
+            new Value\StringValue('TEST'),
+            new Operator(Operator::EQUAL),
+            new Value\StringValue('TEST')
+        ))->logicalAnd((new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::EQUAL),
+            new Value\IntegerValue(100)
+        )));
+
+        $proposition = (new Proposition(
+            new Value\VariableValue('integer'),
+            new Operator(Operator::LESS),
+            new Value\IntegerValue(100)
+        ))->logicalOr($group);
+
+        $this->assertTrue($proposition->evaluate($this->context));
+    }
 }

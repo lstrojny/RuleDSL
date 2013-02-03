@@ -53,7 +53,7 @@ EOS;
             'line'  => $this->line,
             'type'  => Grammar::T_END,
             'start' => $lastToken['end'],
-            'end' => $lastToken['end'],
+            'end'   => $lastToken['end'],
         ];
 
         return new TokenStream($tokens, $this->grammar);

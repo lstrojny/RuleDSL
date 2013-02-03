@@ -62,6 +62,10 @@ class Grammar implements GrammarInterface
                 $type = self::T_RULE;
                 break;
 
+            case 'NOT':
+                $type = self::T_NEGATE;
+                break;
+
             case '-':
                 $type = self::T_MINUS;
                 break;

@@ -15,6 +15,7 @@ class PropertyExpression extends VariableExpression
 
     public function accept(VisitorInterface $visitor)
     {
+        $visitor->visitPropertyExpression($this);
         parent::accept($visitor);
         $this->variableExpression->accept($visitor);
     }

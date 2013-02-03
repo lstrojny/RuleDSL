@@ -54,4 +54,12 @@ class Printer implements VisitorInterface
     public function visitNumericExpression(AST\NumericExpression $numericExpression)
     {
     }
+
+    public function visitNegateExpression(AST\NegateExpression $negateExpression)
+    {
+    }
+
+    public function visitPropertyExpression(AST\PropertyExpression $propertyExpression)
+    {
+    }
 }

@@ -66,6 +66,16 @@ class TestVisitor implements VisitorInterface
         $this->track(__FUNCTION__, $numericExpression);
     }
 
+    public function visitPropertyExpression(AST\PropertyExpression $propertyExpression)
+    {
+        $this->track(__FUNCTION__, $propertyExpression);
+    }
+
+    public function visitNegateExpression(AST\NegateExpression $negateExpression)
+    {
+        $this->track(__FUNCTION__, $negateExpression);
+    }
+
     public function getVisits()
     {
         return $this->visits;

@@ -1,0 +1,18 @@
+{
+    "name": "lstrojny/rule-dsl",
+    "require": {
+        "ruler/ruler": "dev-master",
+        "lstrojny/functional-php": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "Lars Strojny",
+            "email": "lars@strojny.net"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "RuleEngine": "src/"
+        }
+    }
+}

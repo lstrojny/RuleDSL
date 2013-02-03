@@ -1,6 +1,8 @@
 <?php
 namespace RuleEngine\Language\AST;
 
-interface ExpressionInterface
+use RuleEngine\Language\AST\Visitor\VisitableInterface;
+
+interface ExpressionInterface extends VisitableInterface
 {
 }

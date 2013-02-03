@@ -13,6 +13,11 @@ class NumericExpression extends AbstractNode implements ExpressionInterface
         $this->algebraicSignToken = $algebraicSignToken;
     }
 
+    public function getAlgebraicSignToken()
+    {
+        return $this->algebraicSignToken;
+    }
+
     public function accept(VisitorInterface $visitor)
     {
         $visitor->visitNumericExpression($this);

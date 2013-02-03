@@ -189,6 +189,10 @@ class Parser
 
     private function expression()
     {
+        if ($this->tokenStream->getCurrentToken('type') === GrammarInterface::T_NEGATE) {
+            return $this->negateExpression();
+        }
+
         $this->tokenStream->assert([GrammarInterface::T_BOOLEAN, GrammarInterface::T_STRING]);
 
         if ($this->tokenStream->getCurrentToken('type') === GrammarInterface::T_BOOLEAN) {
@@ -196,6 +200,20 @@ class Parser
         }
 
         return $this->variableExpression();
+    }
+
+    private function negateExpression()
+    {
+        $token = $this->tokenStream->assert([GrammarInterface::T_NEGATE]);
+        $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
+        $decoratingToken = $this->tokenStream->getSkippedTokens();
+
+        $nestedExpression = $this->expression();
+
+        $negateExpression = new AST\NegateExpression($token, $nestedExpression);
+        $nestedExpression->addDecoratingToken($decoratingToken);
+
+        return $negateExpression;
     }
 
     private function variableExpression()
@@ -229,11 +247,13 @@ class Parser
             [GrammarInterface::T_OF]
         );
 
+        $whitespaceToken = array_pop($tokens);
         $ofToken = $this->tokenStream->getCurrentToken();
 
         $this->tokenStream->next([GrammarInterface::T_WHITESPACE]);
 
         $propertyExpression = new AST\PropertyExpression($tokens, $this->variableExpression());
+        $propertyExpression->addDecoratingToken($whitespaceToken);
         $propertyExpression->addDecoratingToken($ofToken);
         $propertyExpression->addDecoratingTokens($this->tokenStream->getSkippedTokens());
 

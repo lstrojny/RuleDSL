@@ -17,6 +17,7 @@ interface GrammarInterface
     const T_NUMBER     = 0b00000100000000000;
     const T_PLUS       = 0b00001000000000000;
     const T_MINUS      = 0b00010000000000000;
+    const T_NEGATE     = 0b00100000000000000;
 
     public function getTokenName($token);
 
